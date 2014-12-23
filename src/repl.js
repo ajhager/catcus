@@ -35,9 +35,25 @@ var STRING = 5;
 var state = INTERPRET;
 
 var stack = [];
-var P = function(v) {
-	stack.push(v);
+
+runtime = {
+	push: function(v1) {
+		stack.push(v1);
+	},
+	pop: function(n) {
+		return stack.splice(stack.length - n, n);
+	},
+	clear: function() {
+		stack = [];
+	},
+	exec: function(quote) {
+		var error = execute(quote);
+		if (error) {
+			log(colors.red, error);
+		}
+	},
 };
+
 var name = "";
 var defstack = [];
 
@@ -45,102 +61,10 @@ var dict = {
 	".": function(v1) {
 		log(colors.green, pp(v1));
 	},
-	"+": function(v1, v2) {
-		P(v1 + v2);
-	},
-	"-": function(v1, v2) {
-		P(v1 - v2);
-	},
-	"*": function(v1, v2) {
-		P(v1 * v2);
-	},
-	"/": function(v1, v2) {
-		P(v1 / v2);
-	},
-	"%": function(v1, v2) {
-		P(v1 % v2);
-	},
-	"==": function(v1, v2) {
-		P(v1 === v2);
-	},
-	"!=": function(v1, v2) {
-		P(v1 !== v2);
-	},
-	"<": function(v1, v2) {
-		P(v1 < v2);
-	},
-	"<=": function(v1, v2) {
-		P(v1 <= v2);
-	},
-	">": function(v1, v2) {
-		P(v1 > v2);
-	},
-	">=": function(v1, v2) {
-		P(v1 >= v2);
-	},
-	"swap": function(v1, v2) {
-		P(v2);
-		P(v1);
-	},
-	"dup": function(v1) {
-		P(v1);
-		P(v1);
-	},
-	"dip": function(v1, v2) {
-		exec(v2);
-		P(v1);
-	},
-	"if": function(v1, v2, v3) {
-		if (v1) {
-			exec(v2);
-		} else {
-			exec(v3);
-		}
-	},
-	"over": function(v1, v2) {
-		P(v1);
-		P(v2);
-		P(v1);
-	},
-	"tuck": function(v1, v2) {
-		P(v2);
-		P(v1);
-		P(v2);
-	},
-	"rot": function(v1, v2, v3) {
-		P(v2);
-		P(v3);
-		P(v1);
-	},
-	"drop": function(v1) {},
-	"call": function(v1) {
-		exec(v1);
-	},
-	"compose": function(v1, v2) {
-		P(v1.concat(v2))
-	},
-	"exit": function() {
-		process.exit();
-	},
-	"clear": function() {
-		stack = [];
-	},
-	"eval": function(v1) {
-		eval(v1);
-	},
 	"def": function(v1, v2) {
-		eval('dict["' + v2 + '"] = ' + v1);
-	},
-	"Math.abs": function(v1) {
-		P(Math.abs(v1));
+		eval('dict["' + v1 + '"] = ' + v2);
 	},
 };
-
-var kernel = [
-	": when swap [ call ] [ drop ] if ;",
-	": 2dip ( x y quot -- x y ) swap [ dip ] dip ;",
-	": 3dip ( x y z quot -- x y z ) swap [ 2dip ] dip ;",
-];
 
 var exec = function(quote) {
 	var error = execute(quote);
@@ -153,17 +77,13 @@ var isNum = function(val) {
 	return !isNaN(val);
 };
 
-var isString = function(val) {
-	return val.slice(0, 1) == '"' && val.slice(-1) == '"';
-};
-
 var call = function(word) {
 	var argc = word.length
-	var argv = stack.splice(stack.length - argc, argc);
+	var argv = runtime.pop(argc);
 	if (argv.length == argc) {
 		word.apply(null, argv);
 	} else {
-		stack.push.apply(stack, argv);
+		runtime.push.apply(stack, argv);
 		return "stack underflow";
 	}
 };
@@ -191,15 +111,15 @@ var execute = function(tokens) {
 						}
 					}
 				} else if (token === 'null') {
-					stack.push(null);
+					runtime.push(null);
 				} else if (token === 'undefined') {
-					stack.push(undefined);
+					runtime.push(undefined);
 				} else if (token === 'true') {
-					stack.push(true);
+					runtime.push(true);
 				} else if (token === 'false') {
-					stack.push(false);
-				} else if (isNum(token)) {
-					stack.push(Number(token));
+					runtime.push(false);
+				} else if (!isNaN(token)) {
+					runtime.push(Number(token));
 				} else if (token === '"') {
 					state = STRING;
 				} else if (token === ':') {
@@ -237,7 +157,7 @@ var execute = function(tokens) {
 				break;
 			case STRING:
 				if (token === '"') {
-					stack.push(defstack.join(' '));
+					runtime.push(defstack.join(' '));
 					defstack = [];
 					state = INTERPRET;
 				} else {
@@ -248,7 +168,7 @@ var execute = function(tokens) {
 				if (token === "[") {
 					return "TOKEN [ INSIDE QUOTATION";
 				} else if (token === "]") {
-					stack.push(defstack);
+					runtime.push(defstack);
 					defstack = [];
 					state = INTERPRET;
 				} else {
@@ -274,7 +194,9 @@ module.exports = function() {
 	var stdin = process.openStdin();
 	var repl = readline.createInterface(stdin, stdout);
 
-	exec(kernel.join("\n").match(/\S+/g));
+	var fs = require('fs');
+	var kernel = fs.readFileSync(path.dirname(__dirname) + '/lib/kernel.cus', 'utf8');
+	exec(kernel.match(/\S+/g));
 
 	repl.on('close', function() {
 		stdin.destroy();
