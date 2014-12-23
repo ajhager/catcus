@@ -177,6 +177,7 @@ def
 
 ( Combinators )
 
+: keep over [ call ] dip ;
 : 2keep [ 2dup ] dip 2dip ;
 : 2over ( x y z -- x y z x y ) pick pick ;
 : 2bi ( x y p q -- ) [ 2keep ] dip call ;
