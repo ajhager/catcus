@@ -8,6 +8,12 @@ def
 	" function(v1, v2) { runtime.push(v1.concat(v2)); } "
 def
 
+" curry " ( x quot1 -- quot2 )
+	" function(v1, v2) {
+		runtime.push([v1].concat(v2));
+	} "
+def
+
 " clear " ( ... -- )
 	" function() { runtime.clear(); } "
 def
