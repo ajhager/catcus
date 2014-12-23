@@ -1,21 +1,21 @@
 {
-  "name": "catcus",
-  "description": "A concatenative language that compiles to JavaScript",
-  "keywords": [
-    "javascript",
-    "language",
-    "catcus",
-    "compiler"
-  ],
-  "author": "Joseph Hager <ajhager@gmail.com> (http://ajhager.com/)",
-  "version": "0.0.1",
-  "main": "src/repl.js",
-  "bin": {
-    "catcus": "./catcus"
-  },
-  "homepage": "http://catcus.io",
-  "dependencies": {
-    "colors": "^1.0.3"
-  },
-  "devDependencies": {}
+	"name": "catcus",
+	"description": "A concatenative language that compiles to JavaScript",
+	"keywords": [
+		"javascript",
+		"language",
+		"catcus",
+		"compiler"
+	],
+	"author": "Joseph Hager <ajhager@gmail.com> (http://ajhager.com/)",
+	"version": "0.0.1",
+	"main": "src/repl.js",
+	"bin": {
+		"catcus": "./catcus"
+	},
+	"homepage": "http://catcus.io",
+	"dependencies": {
+		"colors": "^1.0.3"
+	},
+	"devDependencies": {}
 }
