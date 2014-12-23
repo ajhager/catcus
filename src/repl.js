@@ -182,8 +182,14 @@ var execute = function(tokens) {
 	}
 };
 
+var banner = "   _________  ______________  _______\n" +
+	"  / ____/   |/_  __/ ____/ / / / ___/  /\\___/\\\n" +
+	" / /   / /| | / / / /   / / / /\\__ \\   ) -.- (  $%^&*!\n" +
+	"/ /___/ ___ |/ / / /___/ /_/ /___/ /  =\\  o  /=\n" +
+	"\\____/_/  |_/_/  \\____/\\____//____/     )   (\n";
+
 module.exports = function() {
-	log(colors.white.bold, "Conkat v0.0.1\n")
+	log(colors.white.bold, banner);
 
 	var stdout = process.stdout;
 	var stdin = process.openStdin();
