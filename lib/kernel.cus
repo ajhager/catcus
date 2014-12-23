@@ -22,47 +22,47 @@ def
 	" function() { process.exit(); } "
 def
 
-" add " ( x y -- z )
+" + " ( x y -- z )
 	" function(v1, v2) { runtime.push(v1 + v2); } "
 def
 
-" sub " ( x y -- z )
+" - " ( x y -- z )
 	" function(v1, v2) { runtime.push(v1 - v2); } "
 def
 
-" mul " ( x y -- z )
+" * " ( x y -- z )
 	" function(v1, v2) { runtime.push(v1 * v2); } "
 def
 
-" div " ( x y -- z )
+" / " ( x y -- z )
 	" function(v1, v2) { runtime.push(v1 / v2); } "
 def
 
-" mod " ( x y -- z )
+" % " ( x y -- z )
 	" function(v1, v2) { runtime.push(v1 % v2); } "
 def
 
-" eq? " ( x y -- cond )
+" == " ( x y -- cond )
 	" function(v1, v2) { runtime.push(v1 === v2); } "
 def
 
-" neq? " ( x y -- cond )
+" != " ( x y -- cond )
 	" function(v1, v2) { runtime.push(v1 !== v2); } "
 def
 
-" lt? " ( x y -- cond )
+" < " ( x y -- cond )
 	" function(v1, v2) { runtime.push(v1 < v2); } "
 def
 
-" lte? " ( x y -- cond )
+" <= " ( x y -- cond )
 	" function(v1, v2) { runtime.push(v1 <= v2); } "
 def
 
-" gt? " ( x y -- cond )
+" > " ( x y -- cond )
 	" function(v1, v2) { runtime.push(v1 > v2); } "
 def
 
-" gte? " ( x y -- cond )
+" >= " ( x y -- cond )
 	" function(v1, v2) { runtime.push(v1 >= v2); } "
 def
 
@@ -177,6 +177,9 @@ def
 
 ( Combinators )
 
-: when ( cond quot -- x ) swap [ call ] [ drop ] if ;
+: 2keep [ 2dup ] dip 2dip ;
+: 2over ( x y z -- x y z x y ) pick pick ;
+: 2bi ( x y p q -- ) [ 2keep ] dip call ;
 : 2dip ( x y quot -- x y ) swap [ dip ] dip ;
 : 3dip ( x y z quot -- x y z ) swap [ 2dip ] dip ;
+: when ( cond quot -- x ) swap [ call ] [ drop ] if ;
