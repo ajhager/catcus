@@ -17,18 +17,31 @@
 " > " " function(v1, v2) { runtime.push(v1 > v2); } " def
 " >= " " function(v1, v2) { runtime.push(v1 >= v2); } " def
 
-" drop " " function(v1) { } " def
-" 2drop " " function(v1, v2) { } " def
-" 3drop " " function(v1, v2, v3) { } " def
-" 4drop " " function(v1, v2, v3, v4) { } " def
+" drop " ( x -- )
+	" function(x) { } "
+def
 
-" dup " " function(v1) {
+" 2drop " ( x y -- )
+	" function(x, y) { } "
+def
+
+" 3drop " ( x y z -- )
+	" function(x, y, z) { } "
+def
+
+" 4drop " ( w x y z -- )
+	" function(w, x, y, z) { } "
+def
+
+" dup " ( x -- x x )
+	" function(v1) {
 		runtime.push(v1);
 		runtime.push(v1);
 	} "
 def
 
-" 2dup " " function(v1, v2) {
+" 2dup " ( x y -- x y x y )
+	" function(v1, v2) {
 		runtime.push(v1);
 		runtime.push(v2);
 		runtime.push(v1);
@@ -36,7 +49,8 @@ def
 	} "
 def
 
-" 3dup " " function(v1, v2, v3) {
+" 3dup " ( x y z -- x y z x y z )
+	" function(v1, v2, v3) {
 		runtime.push(v1);
 		runtime.push(v2);
 		runtime.push(v3);
@@ -46,7 +60,8 @@ def
 	} "
 def
 
-" 4dup " " function(v1, v2, v3, v4) {
+" 4dup " ( w x y z -- w x y z w x y z )
+	" function(v1, v2, v3, v4) {
 		runtime.push(v1);
 		runtime.push(v2);
 		runtime.push(v3);
