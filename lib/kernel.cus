@@ -1,179 +1,176 @@
 ( Primitives )
 
-" call " ( quot -- )
-	" function(v1) { runtime.exec(v1); } "
-def
+JS: call
+	function(v1) {
+		runtime.exec(v1);
+	} ;
 
-" compose " ( quot1 quot2 -- quot3 )
-	" function(v1, v2) { runtime.push(v1.concat(v2)); } "
-def
+JS: compose
+	function(v1, v2) {
+		runtime.push(v1.concat(v2));
+	} ;
 
-" curry " ( x quot1 -- quot2 )
-	" function(v1, v2) {
+JS: curry
+	function(v1, v2) {
 		runtime.push([v1].concat(v2));
-	} "
-def
+	} ;
 
-" clear " ( ... -- )
-	" function() { runtime.clear(); } "
-def
+JS: clear
+	function() {
+		runtime.clear();
+	} ;
 
-" exit " ( -- )
-	" function() { process.exit(); } "
-def
+JS: exit
+	function() {
+		process.exit();
+	} ;
 
-" + " ( x y -- z )
-	" function(v1, v2) { runtime.push(v1 + v2); } "
-def
+JS: +
+	function(v1, v2) {
+		runtime.push(v1 + v2);
+	} ;
 
-" - " ( x y -- z )
-	" function(v1, v2) { runtime.push(v1 - v2); } "
-def
+JS: -
+	function(v1, v2) {
+		runtime.push(v1 - v2);
+	} ;
 
-" * " ( x y -- z )
-	" function(v1, v2) { runtime.push(v1 * v2); } "
-def
+JS: *
+	function(v1, v2) {
+		runtime.push(v1 * v2);
+	} ;
 
-" / " ( x y -- z )
-	" function(v1, v2) { runtime.push(v1 / v2); } "
-def
+JS: /
+	function(v1, v2) {
+		runtime.push(v1 / v2);
+	} ;
 
-" % " ( x y -- z )
-	" function(v1, v2) { runtime.push(v1 % v2); } "
-def
+JS: %
+	function(v1, v2) {
+		runtime.push(v1 % v2);
+	} ;
 
-" == " ( x y -- cond )
-	" function(v1, v2) { runtime.push(v1 === v2); } "
-def
+JS: ==
+	function(v1, v2) {
+		runtime.push(v1 === v2);
+	} ;
 
-" != " ( x y -- cond )
-	" function(v1, v2) { runtime.push(v1 !== v2); } "
-def
+JS: !=
+	function(v1, v2) {
+		runtime.push(v1 !== v2);
+	} ;
 
-" < " ( x y -- cond )
-	" function(v1, v2) { runtime.push(v1 < v2); } "
-def
+JS: <
+	function(v1, v2) {
+		runtime.push(v1 < v2);
+	} ;
 
-" <= " ( x y -- cond )
-	" function(v1, v2) { runtime.push(v1 <= v2); } "
-def
+JS: <=
+	function(v1, v2) {
+		runtime.push(v1 <= v2);
+	} ;
 
-" > " ( x y -- cond )
-	" function(v1, v2) { runtime.push(v1 > v2); } "
-def
+JS: >
+	function(v1, v2) {
+		runtime.push(v1 > v2);
+	} ;
 
-" >= " ( x y -- cond )
-	" function(v1, v2) { runtime.push(v1 >= v2); } "
-def
+JS: >=
+	function(v1, v2) {
+		runtime.push(v1 >= v2);
+	} ;
 
-" drop " ( x -- )
-	" function(x) { } "
-def
+JS: drop function(x) { } ;
 
-" 2drop " ( x y -- )
-	" function(x, y) { } "
-def
+JS: 2drop function(x, y) { } ;
 
-" 3drop " ( x y z -- )
-	" function(x, y, z) { } "
-def
+JS: 3drop function(x, y, z) { } ;
 
-" 4drop " ( w x y z -- )
-	" function(w, x, y, z) { } "
-def
+JS: 4drop function(w, x, y, z) { } ;
 
-" dup " ( x -- x x )
-	" function(v1) {
+JS: dup
+	function(v1) {
 		runtime.push(v1);
 		runtime.push(v1);
-	} "
-def
+	} ;
 
-" 2dup " ( x y -- x y x y )
-	" function(v1, v2) {
-		runtime.push(v1);
-		runtime.push(v2);
-		runtime.push(v1);
-		runtime.push(v2);
-	} "
-def
-
-" 3dup " ( x y z -- x y z x y z )
-	" function(v1, v2, v3) {
+JS: 2dup
+	function(v1, v2) {
 		runtime.push(v1);
 		runtime.push(v2);
-		runtime.push(v3);
 		runtime.push(v1);
 		runtime.push(v2);
-		runtime.push(v3);
-	} "
-def
+	} ;
 
-" 4dup " ( w x y z -- w x y z w x y z )
-	" function(v1, v2, v3, v4) {
+JS: 3dup
+	function(v1, v2, v3) {
 		runtime.push(v1);
 		runtime.push(v2);
 		runtime.push(v3);
-		runtime.push(v4);
+		runtime.push(v1);
+		runtime.push(v2);
+		runtime.push(v3);
+	} ;
+
+JS: 4dup
+	function(v1, v2, v3, v4) {
 		runtime.push(v1);
 		runtime.push(v2);
 		runtime.push(v3);
 		runtime.push(v4);
-	} "
-def
+		runtime.push(v1);
+		runtime.push(v2);
+		runtime.push(v3);
+		runtime.push(v4);
+	} ;
 
-" nip " ( x y -- y )
-	" function(v1, v2) { runtime.push(v2); } "
-def
+JS: nip
+	function(v1, v2) {
+		runtime.push(v2);
+	} ;
 
-" over " ( x y -- x y x )
-	" function(v1, v2) {
+JS: over
+	function(v1, v2) {
 		runtime.push(v1);
 		runtime.push(v2);
 		runtime.push(v1);
-	} "
-def
+	} ;
 
-" pick " ( x y z -- x y z x )
-	" function(v1, v2, v3) {
+JS: pick
+	function(v1, v2, v3) {
 		runtime.push(v1);
 		runtime.push(v2);
 		runtime.push(v3);
 		runtime.push(v1);
-	} "
-def
+	} ;
 
-" rot " ( x y z -- y z x )
-	" function(v1, v2, v3) {
+JS: rot
+	function(v1, v2, v3) {
 		runtime.push(v2);
 		runtime.push(v3);
 		runtime.push(v1);
-	} "
-def
+	} ;
 
-" swap " ( x y -- y x )
-	" function(v1, v2) {
+JS: swap
+	function(v1, v2) {
 		runtime.push(v2);
 		runtime.push(v1);
-	} "
-def
+	} ;
 
-" dip " ( x quot -- x )
-	" function(v1, v2) {
+JS: dip
+	function(v1, v2) {
 		runtime.exec(v2);
 		runtime.push(v1);
-	} "
-def
+	} ;
 
-" if " ( cond quot1 quot2 -- x )
-	" function(v1, v2, v3) {
+JS: if
+	function(v1, v2, v3) {
 		if (v1) {
 			exec(v2);
 		} else {
 			exec(v3);
 		}
-	} "
-def
+	} ;
 
 ( Combinators )
 

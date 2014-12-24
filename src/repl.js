@@ -31,6 +31,8 @@ var COMPILE = 2;
 var COMMENT = 3;
 var QUOTE = 4;
 var STRING = 5;
+var JSCOMPILE = 6;
+var JSDEF = 7;
 
 var state = INTERPRET;
 
@@ -124,6 +126,8 @@ var execute = function(tokens) {
 					state = STRING;
 				} else if (token === ':') {
 					state = DEFINITION;
+				} else if (token === 'JS:') {
+					state = JSDEF;
 				} else if (token === '(') {
 					state = COMMENT;
 				} else if (token === "[") {
@@ -136,6 +140,10 @@ var execute = function(tokens) {
 				name = token;
 				state = COMPILE;
 				break;
+			case JSDEF:
+				name = token;
+				state = JSCOMPILE;
+				break;
 			case COMPILE:
 				if (token === ":") {
 					return "TOKEN : INSIDE DEFINITION";
@@ -144,6 +152,18 @@ var execute = function(tokens) {
 						return "DUPLICATE WORD: " + name;
 					}
 					dict[name] = defstack;
+					defstack = [];
+					state = INTERPRET;
+				} else {
+					defstack.push(token);
+				}
+				break;
+			case JSCOMPILE:
+				if (token === ";") {
+					if (dict.hasOwnProperty(name)) {
+						return "DUPLICATE WORD: " + name;
+					}
+					eval('dict["' + name + '"] = ' + defstack.join(' '));
 					defstack = [];
 					state = INTERPRET;
 				} else {
