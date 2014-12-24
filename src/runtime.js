@@ -1,18 +1,93 @@
 var colors = require('colors/safe');
 
-var states = {
-	INTERPRET: 0,
-	DEFINITION: 1,
-	COMPILE: 2,
-	COMMENT: 3,
-	QUOTE: 4,
-	STRING: 5,
-	JSCOMPILE: 6,
-	JSDEF: 7,
+var parser;
+var parsers = {
+	'(': function() {
+		this.parse = function(token) {
+			if (token === ")") {
+				return true;
+			}
+		};
+	},
+
+	'"': function() {
+		this.stack = [];
+
+		this.parse = function(token) {
+			if (token === '"') {
+				runtime.push(this.stack.join(' '));
+				return true;
+			} else {
+				this.stack.push(token);
+			}
+		};
+	},
+
+	'[': function() {
+		this.stack = [];
+
+		this.parse = function(token) {
+			if (token === "[") {
+				throw "TOKEN [ INSIDE QUOTATION";
+			} else if (token === "]") {
+				runtime.push(this.stack);
+				return true;
+			} else {
+				this.stack.push(token);
+			}
+		};
+	},
+
+	':': function() {
+		this.stack = [];
+
+		this.parse = function(token) {
+			if (token === ":") {
+				throw "TOKEN : INSIDE DEFINITION";
+			} else if (token === ";") {
+				if (this.stack.length === 0) {
+					return true;
+				}
+
+				var name = this.stack[0];
+
+				if (runtime.lookup(name)) {
+					throw "DUPLICATE WORD: " + name;
+				}
+
+				runtime.define(name, this.stack.slice(1, this.stack.length));
+				return true;
+			} else {
+				this.stack.push(token);
+			}
+		};
+	},
+
+	'JS:': function() {
+		this.stack = [];
+
+		this.parse = function(token) {
+			if (token === ";") {
+				if (this.stack.length === 0) {
+					return true;
+				}
+
+				var name = this.stack[0];
+
+				if (runtime.lookup(name)) {
+					throw "DUPLICATE WORD: " + name;
+				}
+
+				var code = this.stack.slice(1, this.stack.length).join(' ');
+				eval('runtime.define("' + name + '", ' + code + ')');
+
+				return true;
+			} else {
+				this.stack.push(token);
+			}
+		};
+	},
 };
-var state = states.INTERPRET;
-var defname = "";
-var defstack = [];
 
 var execute = function(tokens) {
 	var tokens = tokens || [];
@@ -20,106 +95,36 @@ var execute = function(tokens) {
 	for (var i = 0; i < tokens.length; i++) {
 		var token = tokens[i];
 
-		switch (state) {
-			case states.INTERPRET:
-				var word = runtime.lookup(token);
-				if (word) {
-					if (typeof(word) === 'function') {
-						var error = runtime.call(word);
-						if (error) {
-							return error;
-						}
-					} else {
-						var error = runtime.exec(word);
-						if (error) {
-							return error;
-						}
+		if (parser) {
+			try {
+				var result = parser.parse(token);
+				if (result) {
+					parser = null;
+				}
+			} catch (e) {
+				return e;
+			}
+		} else {
+			var word = runtime.lookup(token);
+			if (word) {
+				if (typeof(word) === 'function') {
+					var error = runtime.call(word);
+					if (error) {
+						return error;
 					}
-				} else if (token === 'null') {
-					runtime.push(null);
-				} else if (token === 'undefined') {
-					runtime.push(undefined);
-				} else if (token === 'true') {
-					runtime.push(true);
-				} else if (token === 'false') {
-					runtime.push(false);
-				} else if (!isNaN(token)) {
-					runtime.push(Number(token));
-				} else if (token === '"') {
-					state = states.STRING;
-				} else if (token === ':') {
-					state = states.DEFINITION;
-				} else if (token === 'JS:') {
-					state = states.JSDEF;
-				} else if (token === '(') {
-					state = states.COMMENT;
-				} else if (token === "[") {
-					state = states.QUOTE;
 				} else {
-					return "UNKNOWN TOKEN: " + token;
-				}
-				break;
-			case states.DEFINITION:
-				defname = token;
-				state = states.COMPILE;
-				break;
-			case states.JSDEF:
-				defname = token;
-				state = states.JSCOMPILE;
-				break;
-			case states.COMPILE:
-				if (token === ":") {
-					return "TOKEN : INSIDE DEFINITION";
-				} else if (token === ";") {
-					if (runtime.lookup(defname)) {
-						return "DUPLICATE WORD: " + defname;
+					var error = runtime.exec(word);
+					if (error) {
+						return error;
 					}
-					runtime.define(defname, defstack);
-					defstack = [];
-					state = states.INTERPRET;
-				} else {
-					defstack.push(token);
 				}
-				break;
-			case states.JSCOMPILE:
-				if (token === ";") {
-					if (runtime.lookup(defname)) {
-						return "DUPLICATE WORD: " + defname;
-					}
-					eval('runtime.define("' + defname + '", ' + defstack.join(' ') + ')');
-					defstack = [];
-					state = states.INTERPRET;
-				} else {
-					defstack.push(token);
-				}
-				break;
-			case states.COMMENT:
-				if (token === ")") {
-					state = states.INTERPRET;
-				}
-				break;
-			case states.STRING:
-				if (token === '"') {
-					runtime.push(defstack.join(' '));
-					defstack = [];
-					state = states.INTERPRET;
-				} else {
-					defstack.push(token);
-				}
-				break;
-			case states.QUOTE:
-				if (token === "[") {
-					return "TOKEN [ INSIDE QUOTATION";
-				} else if (token === "]") {
-					runtime.push(defstack);
-					defstack = [];
-					state = states.INTERPRET;
-				} else {
-					defstack.push(token);
-				}
-				break;
-			default:
-				return "UNKNOWN STATE: " + state;
+			} else if (parsers[token]) {
+				parser = new parsers[token];
+			} else if (!isNaN(token)) {
+				runtime.push(Number(token));
+			} else {
+				return "UNKNOWN TOKEN: " + token;
+			}
 		}
 	}
 };
@@ -137,7 +142,7 @@ var runtime = {
 	},
 
 	parsing: function() {
-		return (state !== states.INTERPRET);
+		return parser;
 	},
 
 	namespace: {},
@@ -162,7 +167,7 @@ var runtime = {
 				if (ret) {
 					this.push(ret);
 				}
-			} catch(err) {
+			} catch (err) {
 				return err;
 			}
 		} else {
