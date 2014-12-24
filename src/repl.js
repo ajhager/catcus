@@ -200,7 +200,7 @@ module.exports = function() {
 	var repl = readline.createInterface(stdin, stdout);
 
 	var normalPrompt = colors.magenta('catcus> ')
-	var insidePrompt = colors.yellow('     .. ');
+	var blockPrompt = colors.yellow('     .. ');
 
 	repl.on('close', function() {
 		stdin.destroy();
@@ -213,7 +213,7 @@ module.exports = function() {
 			repl.setPrompt(normalPrompt, 8);
 			console.log(colors.white.bold('=>'), colors.white.bold(stackToString()));
 		} else {
-			repl.setPrompt(insidePrompt, 8);
+			repl.setPrompt(blockPrompt, 8);
 		}
 
 		repl.prompt();
