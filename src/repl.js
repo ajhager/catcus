@@ -15,30 +15,39 @@ var runtime = {
 	},
 
 	namespace: {},
-	exists: function(word) {
-		return this.namespace.hasOwnProperty(word)
-	},
 	define: function(word, func) {
 		this.namespace[word] = func;
 	},
 	lookup: function(word) {
-		return this.namespace[word];
-	},
+		var obj = this.namespace[word];
+		if (obj) return obj;
 
-	exec: function(quote) {
-		var error = execute(quote);
-		if (error) {
-			console.log(colors.red(error));
-		}
+		var s = word.split('.')
+		obj = global[s.shift()];
+		while (obj && s.length) obj = obj[s.shift()];
+		return obj;
 	},
 	call: function(word) {
 		var argc = word.length
 		var argv = this.pop(argc);
 		if (argv.length == argc) {
-			word.apply(null, argv);
+			try {
+				var ret = word.apply(word, argv);
+				if (ret) {
+					this.push(ret);
+				}
+			} catch(err) {
+				return err;
+			}
 		} else {
 			this.stack.push.apply(this.stack, argv);
 			return "stack underflow";
+		}
+	},
+	exec: function(quote) {
+		var error = execute(quote);
+		if (error) {
+			console.log(colors.red(error));
 		}
 	},
 
@@ -92,9 +101,8 @@ var execute = function(tokens) {
 
 		switch (state) {
 			case states.INTERPRET:
-				if (runtime.exists(token)) {
-					var word = runtime.lookup(token);
-
+				var word = runtime.lookup(token);
+				if (word) {
 					if (typeof(word) === 'function') {
 						var error = runtime.call(word);
 						if (error) {
@@ -142,7 +150,7 @@ var execute = function(tokens) {
 				if (token === ":") {
 					return "TOKEN : INSIDE DEFINITION";
 				} else if (token === ";") {
-					if (runtime.exists(defname)) {
+					if (runtime.lookup(defname)) {
 						return "DUPLICATE WORD: " + defname;
 					}
 					runtime.define(defname, defstack);
@@ -154,7 +162,7 @@ var execute = function(tokens) {
 				break;
 			case states.JSCOMPILE:
 				if (token === ";") {
-					if (runtime.exists(defname)) {
+					if (runtime.lookup(defname)) {
 						return "DUPLICATE WORD: " + defname;
 					}
 					eval('runtime.define("' + defname + '", ' + defstack.join(' ') + ')');
@@ -195,7 +203,7 @@ var execute = function(tokens) {
 	}
 };
 
-var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.red("v0.0.1\n") + "   )   (\n");
+var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.1\n") + "   )   (\n");
 
 module.exports = function() {
 	console.log(banner);
