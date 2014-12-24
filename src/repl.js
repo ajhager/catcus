@@ -2,30 +2,10 @@ var colors = require('colors/safe');
 var path = require('path');
 var readline = require('readline');
 
-var INTERPRET = 0;
-var DEFINITION = 1;
-var COMPILE = 2;
-var COMMENT = 3;
-var QUOTE = 4;
-var STRING = 5;
-var JSCOMPILE = 6;
-var JSDEF = 7;
-
 var runtime = {
 	stack: [],
-	state: INTERPRET,
-	defname: "",
-	defstack: [],
-	namespace: {
-		".": function(v1) {
-			log(colors.green, runtime.print(v1));
-		}
-	},
 	push: function(v1) {
 		this.stack.push(v1);
-	},
-	pushArgs: function(args) {
-		this.stack.push.apply(this.stack, args);
 	},
 	pop: function(n) {
 		return this.stack.splice(this.stack.length - n, n);
@@ -33,10 +13,13 @@ var runtime = {
 	clear: function() {
 		this.stack = [];
 	},
+
+	namespace: {},
+
 	exec: function(quote) {
 		var error = execute(quote);
 		if (error) {
-			log(colors.red, error);
+			console.log(colors.red(error));
 		}
 	},
 	call: function(word) {
@@ -45,10 +28,11 @@ var runtime = {
 		if (argv.length == argc) {
 			word.apply(null, argv);
 		} else {
-			this.pushArgs(argv);
+			this.stack.push.apply(this.stack, argv);
 			return "stack underflow";
 		}
 	},
+
 	print: function(v) {
 		if (v === null) {
 			return "null";
@@ -69,9 +53,19 @@ var runtime = {
 	},
 };
 
-var log = function(color) {
-	console.log(color([].slice.call(arguments, 1).join(' ')));
+var states = {
+	INTERPRET: 0,
+	DEFINITION: 1,
+	COMPILE: 2,
+	COMMENT: 3,
+	QUOTE: 4,
+	STRING: 5,
+	JSCOMPILE: 6,
+	JSDEF: 7,
 };
+var state = states.INTERPRET;
+var defname = "";
+var defstack = [];
 
 var stackToString = function() {
 	var output = [];
@@ -87,8 +81,8 @@ var execute = function(tokens) {
 	for (var i = 0; i < tokens.length; i++) {
 		var token = tokens[i];
 
-		switch (runtime.state) {
-			case INTERPRET:
+		switch (state) {
+			case states.INTERPRET:
 				if (runtime.namespace.hasOwnProperty(token)) {
 					var word = runtime.namespace[token];
 
@@ -114,100 +108,99 @@ var execute = function(tokens) {
 				} else if (!isNaN(token)) {
 					runtime.push(Number(token));
 				} else if (token === '"') {
-					runtime.state = STRING;
+					state = states.STRING;
 				} else if (token === ':') {
-					runtime.state = DEFINITION;
+					state = states.DEFINITION;
 				} else if (token === 'JS:') {
-					runtime.state = JSDEF;
+					state = states.JSDEF;
 				} else if (token === '(') {
-					runtime.state = COMMENT;
+					state = states.COMMENT;
 				} else if (token === "[") {
-					runtime.state = QUOTE;
+					state = states.QUOTE;
 				} else {
 					return "UNKNOWN TOKEN: " + token;
 				}
 				break;
-			case DEFINITION:
-				runtime.defname = token;
-				runtime.state = COMPILE;
+			case states.DEFINITION:
+				defname = token;
+				state = states.COMPILE;
 				break;
-			case JSDEF:
-				runtime.defname = token;
-				runtime.state = JSCOMPILE;
+			case states.JSDEF:
+				defname = token;
+				state = states.JSCOMPILE;
 				break;
-			case COMPILE:
+			case states.COMPILE:
 				if (token === ":") {
 					return "TOKEN : INSIDE DEFINITION";
 				} else if (token === ";") {
-					if (runtime.namespace.hasOwnProperty(runtime.defname)) {
-						return "DUPLICATE WORD: " + runtime.defname;
+					if (runtime.namespace.hasOwnProperty(defname)) {
+						return "DUPLICATE WORD: " + defname;
 					}
-					runtime.namespace[runtime.defname] = runtime.defstack;
-					runtime.defstack = [];
-					runtime.state = INTERPRET;
+					runtime.namespace[defname] = defstack;
+					defstack = [];
+					state = states.INTERPRET;
 				} else {
-					runtime.defstack.push(token);
+					defstack.push(token);
 				}
 				break;
-			case JSCOMPILE:
+			case states.JSCOMPILE:
 				if (token === ";") {
-					if (runtime.namespace.hasOwnProperty(runtime.defname)) {
-						return "DUPLICATE WORD: " + runtime.defname;
+					if (runtime.namespace.hasOwnProperty(defname)) {
+						return "DUPLICATE WORD: " + defname;
 					}
-					eval('runtime.namespace["' + runtime.defname + '"] = ' + runtime.defstack.join(' '));
-					runtime.defstack = [];
-					runtime.state = INTERPRET;
+					eval('runtime.namespace["' + defname + '"] = ' + defstack.join(' '));
+					defstack = [];
+					state = states.INTERPRET;
 				} else {
-					runtime.defstack.push(token);
+					defstack.push(token);
 				}
 				break;
-			case COMMENT:
+			case states.COMMENT:
 				if (token === ")") {
-					runtime.state = INTERPRET;
+					state = states.INTERPRET;
 				}
 				break;
-			case STRING:
+			case states.STRING:
 				if (token === '"') {
-					runtime.push(runtime.defstack.join(' '));
-					runtime.defstack = [];
-					runtime.state = INTERPRET;
+					runtime.push(defstack.join(' '));
+					defstack = [];
+					state = states.INTERPRET;
 				} else {
-					runtime.defstack.push(token);
+					defstack.push(token);
 				}
 				break;
-			case QUOTE:
+			case states.QUOTE:
 				if (token === "[") {
 					return "TOKEN [ INSIDE QUOTATION";
 				} else if (token === "]") {
-					runtime.push(runtime.defstack);
-					runtime.defstack = [];
-					runtime.state = INTERPRET;
+					runtime.push(defstack);
+					defstack = [];
+					state = states.INTERPRET;
 				} else {
-					runtime.defstack.push(token);
+					defstack.push(token);
 				}
 				break;
 			default:
-				return "UNKNOWN STATE: " + runtime.state;
+				return "UNKNOWN STATE: " + state;
 		}
 	}
 };
 
-var banner = "   _________  ______________  _______\n" +
-	"  / ____/   |/_  __/ ____/ / / / ___/  /\\___/\\\n" +
-	" / /   / /| | / / / /   / / / /\\__ \\   ) -.- (  $%^&*!\n" +
-	"/ /___/ ___ |/ / / /___/ /_/ /___/ /  =\\  o  /=\n" +
-	"\\____/_/  |_/_/  \\____/\\____//____/     )   (\n";
+var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.red("v0.0.1\n") + "   )   (\n");
 
 module.exports = function() {
-	log(colors.white.bold, banner);
+	console.log(banner);
+
+	var fs = require('fs');
+	var kernel = fs.readFileSync(path.dirname(__dirname) + '/lib/kernel.cus', 'utf8');
+	runtime.exec(kernel.match(/\S+/g));
 
 	var stdout = process.stdout;
 	var stdin = process.openStdin();
 	var repl = readline.createInterface(stdin, stdout);
 
-	var fs = require('fs');
-	var kernel = fs.readFileSync(path.dirname(__dirname) + '/lib/kernel.cus', 'utf8');
-	runtime.exec(kernel.match(/\S+/g));
+	var normalPrompt = colors.magenta('catcus> ')
+	var insidePrompt = colors.yellow('     .. ');
 
 	repl.on('close', function() {
 		stdin.destroy();
@@ -216,16 +209,16 @@ module.exports = function() {
 	repl.on('line', function(line) {
 		runtime.exec(line.match(/\S+/g));
 
-		if (runtime.state === INTERPRET) {
-			repl.setPrompt('catcus> ');
-			log(colors.white.bold, '=>', stackToString());
+		if (state === states.INTERPRET) {
+			repl.setPrompt(normalPrompt, 8);
+			console.log(colors.white.bold('=>'), colors.white.bold(stackToString()));
 		} else {
-			repl.setPrompt(colors.yellow('     .. '), 8);
+			repl.setPrompt(insidePrompt, 8);
 		}
 
 		repl.prompt();
 	});
 
-	repl.setPrompt('catcus> ');
+	repl.setPrompt(normalPrompt, 8);
 	repl.prompt();
 };
