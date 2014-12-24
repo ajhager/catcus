@@ -36,23 +36,32 @@ var JSDEF = 7;
 
 var state = INTERPRET;
 
-var stack = [];
-
-runtime = {
+var runtime = {
+	stack: [],
 	push: function(v1) {
-		stack.push(v1);
+		this.stack.push(v1);
+	},
+	pushArgs: function(args) {
+		this.stack.push.apply(this.stack, args);
 	},
 	pop: function(n) {
-		return stack.splice(stack.length - n, n);
+		return this.stack.splice(this.stack.length - n, n);
 	},
 	clear: function() {
-		stack = [];
+		this.stack = [];
 	},
 	exec: function(quote) {
 		var error = execute(quote);
 		if (error) {
 			log(colors.red, error);
 		}
+	},
+	print: function() {
+		var output = [];
+		for (var i = 0; i < this.stack.length; i++) {
+			output.push(pp(this.stack[i]));
+		}
+		return output.join(' ');
 	},
 };
 
@@ -85,7 +94,7 @@ var call = function(word) {
 	if (argv.length == argc) {
 		word.apply(null, argv);
 	} else {
-		runtime.push.apply(stack, argv);
+		runtime.pushArgs(argv);
 		return "stack underflow";
 	}
 };
@@ -227,11 +236,7 @@ module.exports = function() {
 
 		if (state === INTERPRET) {
 			repl.setPrompt('catcus> ');
-			var pstack = [];
-			for (var i = 0; i < stack.length; i++) {
-				pstack.push(pp(stack[i]));
-			}
-			log(colors.white.bold, '=>', pstack.join(' '));
+			log(colors.white.bold, '=>', runtime.print());
 		} else {
 			repl.setPrompt(colors.yellow('     .. '), 8);
 		}
