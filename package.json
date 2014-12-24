@@ -13,7 +13,7 @@
 	"bin": {
 		"catcus": "./catcus"
 	},
-	"homepage": "http://catcus.io",
+	"homepage": "http://catcus.org",
 	"dependencies": {
 		"colors": "^1.0.3"
 	},
