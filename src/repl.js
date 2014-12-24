@@ -15,6 +15,15 @@ var runtime = {
 	},
 
 	namespace: {},
+	exists: function(word) {
+		return this.namespace.hasOwnProperty(word)
+	},
+	define: function(word, func) {
+		this.namespace[word] = func;
+	},
+	lookup: function(word) {
+		return this.namespace[word];
+	},
 
 	exec: function(quote) {
 		var error = execute(quote);
@@ -83,8 +92,8 @@ var execute = function(tokens) {
 
 		switch (state) {
 			case states.INTERPRET:
-				if (runtime.namespace.hasOwnProperty(token)) {
-					var word = runtime.namespace[token];
+				if (runtime.exists(token)) {
+					var word = runtime.lookup(token);
 
 					if (typeof(word) === 'function') {
 						var error = runtime.call(word);
@@ -133,10 +142,10 @@ var execute = function(tokens) {
 				if (token === ":") {
 					return "TOKEN : INSIDE DEFINITION";
 				} else if (token === ";") {
-					if (runtime.namespace.hasOwnProperty(defname)) {
+					if (runtime.exists(defname)) {
 						return "DUPLICATE WORD: " + defname;
 					}
-					runtime.namespace[defname] = defstack;
+					runtime.define(defname, defstack);
 					defstack = [];
 					state = states.INTERPRET;
 				} else {
@@ -145,10 +154,10 @@ var execute = function(tokens) {
 				break;
 			case states.JSCOMPILE:
 				if (token === ";") {
-					if (runtime.namespace.hasOwnProperty(defname)) {
+					if (runtime.exists(defname)) {
 						return "DUPLICATE WORD: " + defname;
 					}
-					eval('runtime.namespace["' + defname + '"] = ' + defstack.join(' '));
+					eval('runtime.define("' + defname + '", ' + defstack.join(' ') + ')');
 					defstack = [];
 					state = states.INTERPRET;
 				} else {
