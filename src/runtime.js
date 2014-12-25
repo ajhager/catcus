@@ -1,5 +1,19 @@
 var colors = require('colors/safe');
 
+var Quotation = function(tokens) {
+	for (var i = 0; i < tokens.length; i++) {
+		this.push(tokens[i]);
+	}
+};
+Quotation.prototype = Array.prototype;
+Quotation.prototype.constructor = Quotation;
+
+Quotation.prototype.toString = function() {
+	return "[" + this.join(' ') + "]";
+};
+
+var q = new Quotation([]);
+
 var parser;
 var parsers = {
 	'(': function() {
@@ -25,13 +39,20 @@ var parsers = {
 
 	'[': function() {
 		this.stack = [];
+		this.depth = 1;
 
 		this.parse = function(token) {
 			if (token === "[") {
-				throw "TOKEN [ INSIDE QUOTATION";
+				this.depth += 1;
+				this.stack.push(token);
 			} else if (token === "]") {
-				runtime.push(this.stack);
-				return true;
+				this.depth -= 1;
+				if (this.depth === 0) {
+					runtime.push(new Quotation(this.stack));
+					return true;
+				} else {
+					this.stack.push(token);
+				}
 			} else {
 				this.stack.push(token);
 			}
@@ -104,6 +125,10 @@ var execute = function(tokens) {
 				return e;
 			}
 		} else {
+			if (token.constructor === Quotation) {
+				runtime.push(token)
+				continue;
+			}
 			var word = runtime.lookup(token);
 			if (word) {
 				if (typeof(word) === 'function') {
@@ -182,14 +207,10 @@ var runtime = {
 	},
 
 	print: function(v) {
-		switch (v.constructor) {
-			case String:
-				return '"' + v + '"';
-			case Array:
-				return "[" + v.join(' ') + "]";
-			default:
-				return String(v);
+		if (typeof v === 'string') {
+			return '"' + v + '"';
 		}
+		return String(v);
 	},
 };
 
