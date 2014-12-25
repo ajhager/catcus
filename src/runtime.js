@@ -7,7 +7,7 @@ Quotation.prototype = Array.prototype;
 Quotation.prototype.constructor = Quotation;
 
 Quotation.prototype.toString = function() {
-	return "[" + this.join(' ') + "]";
+	return "[ " + this.join(' ') + " ]";
 };
 
 var runtime = {
@@ -197,8 +197,6 @@ var runtime = {
 	print: function(v) {
 		if (typeof v === 'string') {
 			return '"' + v + '"';
-		} else if (Array.isArray(v)) {
-			return "[" + v.join(' ') + "]"
 		}
 		return String(v);
 	}
