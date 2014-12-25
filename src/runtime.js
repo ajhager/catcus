@@ -182,21 +182,13 @@ var runtime = {
 	},
 
 	print: function(v) {
-		if (v === null) {
-			return "null";
-		}
-
-		if (v === undefined) {
-			return "undefined";
-		}
-
 		switch (v.constructor) {
 			case String:
 				return '"' + v + '"';
 			case Array:
 				return "[" + v.join(' ') + "]";
 			default:
-				return v;
+				return String(v);
 		}
 	},
 };
