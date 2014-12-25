@@ -1,6 +1,10 @@
 {
 	"name": "catcus",
 	"description": "A concatenative language that compiles to JavaScript",
+	"repository": {
+		"type": "git",
+		"url": "http://github.com/ajhager/catcus.git"
+	},
 	"keywords": [
 		"javascript",
 		"language",
@@ -16,6 +20,5 @@
 	"homepage": "http://catcus.org",
 	"dependencies": {
 		"colors": "^1.0.3"
-	},
-	"devDependencies": {}
+	}
 }
