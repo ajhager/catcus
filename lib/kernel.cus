@@ -207,3 +207,10 @@ JS: if
 : 2dip ( x y quot -- x y ) swap [ dip ] dip ;
 : 3dip ( x y z quot -- x y z ) swap [ 2dip ] dip ;
 : when ( cond quot -- x ) swap [ call ] [ drop ] if ;
+
+( Looping )
+
+: do dup 2dip ;
+: while swap do compose [ loop ] curry when ;
+: until [ [ not ] compose ] dip while ;
+: loop [ call ] keep [ loop ] curry when ;
