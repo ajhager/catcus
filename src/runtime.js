@@ -49,13 +49,13 @@ var parsers = {
 					return true;
 				}
 
-				var name = this.stack[0];
+				var name = this.stack.shift();
 
 				if (runtime.lookup(name)) {
 					throw "DUPLICATE WORD: " + name;
 				}
 
-				runtime.define(name, this.stack.slice(1, this.stack.length));
+				runtime.define(name, this.stack);
 				return true;
 			} else {
 				this.stack.push(token);
@@ -72,14 +72,13 @@ var parsers = {
 					return true;
 				}
 
-				var name = this.stack[0];
+				var name = this.stack.shift();
 
 				if (runtime.lookup(name)) {
 					throw "DUPLICATE WORD: " + name;
 				}
 
-				var code = this.stack.slice(1, this.stack.length).join(' ');
-				eval('runtime.define("' + name + '", ' + code + ')');
+				eval('runtime.define("' + name + '", ' + this.stack.join(' ') + ')');
 
 				return true;
 			} else {
