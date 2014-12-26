@@ -5,17 +5,11 @@ var readline = require('readline');
 
 var runtime = require('./runtime');
 
-var stackToString = function() {
-	var output = [];
-	for (var i = 0; i < runtime.stack.length; i++) {
-		output.push(runtime.print(runtime.stack[i]));
-	}
-	return output.join(' ');
-};
-
-var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.1\n") + "   )   (\n");
-
 module.exports = function() {
+	var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.1\n") + "   )   (\n");
+
+	console.log(banner);
+
 	var oldLog = console['log'].bind(console);
 	console['log'] = function() {
 		var args = [].slice.call(arguments, 0);
@@ -28,10 +22,18 @@ module.exports = function() {
 		oldError(colors.red(args.join(' ')));	
 	};
 
-	console.log(banner);
+	args = process.argv.slice(2);
+	args.unshift(path.dirname(__dirname) + '/lib/kernel.cus');
 
-	var kernel = fs.readFileSync(path.dirname(__dirname) + '/lib/kernel.cus', 'utf8');
-	runtime.exec(kernel.match(/\S+/g));
+	for (var i = 0; i < args.length; i++) {
+		try {
+			var file = fs.readFileSync(args[i], 'utf8');
+			runtime.exec(file.match(/\S+/g));
+			console.log("Loaded file: " + args[i]);
+		} catch (e) {
+			console.error(e);
+		}
+	}
 
 	var stdout = process.stdout;
 	var stdin = process.openStdin();

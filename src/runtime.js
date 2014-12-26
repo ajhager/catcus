@@ -167,6 +167,7 @@ var runtime = {
 					runtime.push(token)
 					continue;
 				}
+
 				var word = runtime.lookup(token);
 				if (word) {
 					if (typeof(word) === 'function') {
