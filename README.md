@@ -13,7 +13,7 @@
 <clone repo>
 npm install
 ./catcus
-catcus> 10 [ dup * ] call
+catcus> 10 { dup * } call
 => 100
 catcus> exit
 ```
