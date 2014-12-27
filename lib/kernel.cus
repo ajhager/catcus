@@ -40,12 +40,12 @@ JS: instanceof
 		runtime.push(v1 instanceof v2);
 	} ;
 
-JS: ->
+JS: get
 	function get(v1, v2) {
 		runtime.push(v1[v2]);
 	} ;
 
-JS: <-
+JS: set
 	function set(v1, v2, v3) {
 		v1[v2] = v3;
 		runtime.push(v1);

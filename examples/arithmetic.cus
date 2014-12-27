@@ -6,8 +6,8 @@
 
 : Point.x ( Point -- x ) " x " -> ;
 : Point.y ( Point -- y ) " y " -> ;
-: Point.xy ( Point -- x y ) [ " x " -> ] [ " y " -> ] bi ;
+: Point.xy ( Point -- x y ) [ " x " get ] [ " y " get ] bi ;
 
-: Point.x= ( Point x -- Point ) " x " swap <- ;
-: Point.y= ( Point y -- Point ) " y " swap <- ;
-: Point.xy= ( Point x y -- Point ) [ " x " swap <- ] dip " y " swap <- ;
+: Point.x= ( Point x -- Point ) " x " swap set ;
+: Point.y= ( Point y -- Point ) " y " swap set ;
+: Point.xy= ( Point x y -- Point ) [ " x " swap set ] dip " y " swap set ;
