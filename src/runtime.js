@@ -1,5 +1,5 @@
 Array.prototype.toString = function() {
-	return "[ " + this.join(' ') + " ]";
+	return "{ " + this.join(' ') + " }";
 };
 
 var runtime = {
@@ -86,15 +86,15 @@ var runtime = {
 			};
 		},
 
-		'[': function() {
+		'{': function() {
 			this.stack = [];
 			this.depth = 1;
 
 			this.parse = function(token) {
-				if (token === "[") {
+				if (token === "{") {
 					this.depth += 1;
 					this.stack.push(token);
-				} else if (token === "]") {
+				} else if (token === "}") {
 					this.depth -= 1;
 					if (this.depth === 0) {
 						runtime.push(this.stack);
