@@ -21,88 +21,114 @@ JS: undefined
 	} ;
 
 JS: call
-	function(v1) {
+	function call(v1) {
 		runtime.exec(v1);
 	} ;
 
+JS: new
+	function neww(v1) {
+		runtime.push(new v1());
+	} ;
+
+JS: boa
+	function boa(v1) {
+		runtime.call(v1, true);
+	} ;
+
+JS: instanceof
+	function instanceoff(v1, v2) {
+		runtime.push(v1 instanceof v2);
+	} ;
+
+JS: ->
+	function get(v1, v2) {
+		runtime.push(v1[v2]);
+	} ;
+
+JS: <-
+	function set(v1, v2, v3) {
+		v1[v2] = v3;
+		runtime.push(v1);
+	} ;
+
 JS: compose
-	function(v1, v2) {
+	function compose(v1, v2) {
 		runtime.push(v1.concat(v2));
 	} ;
 
 JS: curry
-	function(v1, v2) {
+	function curry(v1, v2) {
 		v2.unshift(v1);
 		runtime.push(v2);
 	} ;
 
 JS: clear
-	function() {
+	function clear() {
 		runtime.clear();
 	} ;
 
 JS: exit
-	function() {
+	function exit() {
 		process.exit();
 	} ;
 
 JS: .
-	function(v1) {
+	function pp(v1) {
 		console.log(runtime.print(v1));
 	} ;
 
 JS: +
-	function(v1, v2) {
+	function add(v1, v2) {
 		runtime.push(v1 + v2);
 	} ;
 
 JS: -
-	function(v1, v2) {
+	function sub(v1, v2) {
 		runtime.push(v1 - v2);
 	} ;
 
 JS: *
-	function(v1, v2) {
+	function mul(v1, v2) {
 		runtime.push(v1 * v2);
 	} ;
 
 JS: /
-	function(v1, v2) {
+	function div(v1, v2) {
 		runtime.push(v1 / v2);
 	} ;
 
 JS: %
-	function(v1, v2) {
+	function mod(v1, v2) {
 		runtime.push(v1 % v2);
 	} ;
 
 JS: ==
-	function(v1, v2) {
+	function eq(v1, v2) {
 		runtime.push(v1 === v2);
 	} ;
 
 JS: !=
-	function(v1, v2) {
+	function neq(v1, v2) {
 		runtime.push(v1 !== v2);
 	} ;
 
 JS: <
-	function(v1, v2) {
+	function lt(v1, v2) {
 		runtime.push(v1 < v2);
 	} ;
 
 JS: <=
-	function(v1, v2) {
+	function lteq(v1, v2) {
 		runtime.push(v1 <= v2);
 	} ;
 
 JS: >
-	function(v1, v2) {
+	function gt(v1, v2) {
 		runtime.push(v1 > v2);
 	} ;
 
 JS: >=
-	function(v1, v2) {
+	function gteq(v1, v2) {
 		runtime.push(v1 >= v2);
 	} ;
 
@@ -115,7 +141,7 @@ JS: 3drop function(x, y, z) { } ;
 JS: 4drop function(w, x, y, z) { } ;
 
 JS: dup
-	function(v1) {
+	function dup(v1) {
 		runtime.push(v1);
 		runtime.push(v1);
 	} ;
@@ -151,19 +177,19 @@ JS: 4dup
 	} ;
 
 JS: nip
-	function(v1, v2) {
+	function nip(v1, v2) {
 		runtime.push(v2);
 	} ;
 
 JS: over
-	function(v1, v2) {
+	function over(v1, v2) {
 		runtime.push(v1);
 		runtime.push(v2);
 		runtime.push(v1);
 	} ;
 
 JS: pick
-	function(v1, v2, v3) {
+	function pick(v1, v2, v3) {
 		runtime.push(v1);
 		runtime.push(v2);
 		runtime.push(v3);
@@ -171,26 +197,26 @@ JS: pick
 	} ;
 
 JS: rot
-	function(v1, v2, v3) {
+	function rot(v1, v2, v3) {
 		runtime.push(v2);
 		runtime.push(v3);
 		runtime.push(v1);
 	} ;
 
 JS: swap
-	function(v1, v2) {
+	function swap(v1, v2) {
 		runtime.push(v2);
 		runtime.push(v1);
 	} ;
 
 JS: dip
-	function(v1, v2) {
+	function dip(v1, v2) {
 		runtime.exec(v2);
 		runtime.push(v1);
 	} ;
 
 JS: if
-	function(v1, v2, v3) {
+	function ife(v1, v2, v3) {
 		if (v1) {
 			runtime.exec(v2);
 		} else {
@@ -203,6 +229,7 @@ JS: if
 : keep over [ call ] dip ;
 : 2keep [ 2dup ] dip 2dip ;
 : 2over ( x y z -- x y z x y ) pick pick ;
+: bi ( x p q -- ) [ keep ] dip call ;
 : 2bi ( x y p q -- ) [ 2keep ] dip call ;
 : 2dip ( x y quot -- x y ) swap [ dip ] dip ;
 : 3dip ( x y z quot -- x y z ) swap [ 2dip ] dip ;

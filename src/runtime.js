@@ -1,12 +1,4 @@
-var Quotation = function(tokens) {
-	for (var i = 0; i < tokens.length; i++) {
-		this.push(tokens[i]);
-	}
-};
-Quotation.prototype = Array.prototype;
-Quotation.prototype.constructor = Quotation;
-
-Quotation.prototype.toString = function() {
+Array.prototype.toString = function() {
 	return "[ " + this.join(' ') + " ]";
 };
 
@@ -33,14 +25,22 @@ var runtime = {
 	lookup: function(word) {
 		return this.namespace[word];
 	},
-	call: function(word) {
+	call: function(word, con) {
 		var argc = word.length
 		var argv = this.pop(argc);
 		if (argv.length == argc) {
 			try {
-				var ret = word.apply(word, argv);
-				if (ret) {
-					this.push(ret);
+				if (con) {
+					function F() {
+						return word.apply(this, argv);
+					}
+					F.prototype = word.prototype;
+					this.push(new F());
+				} else {
+					var ret = word.apply(word, argv);
+					if (ret) {
+						this.push(ret);
+					}
 				}
 			} catch (err) {
 				return err;
@@ -53,6 +53,18 @@ var runtime = {
 
 	parser: null,
 	parsers: {
+		'\\': function() {
+			this.parse = function(token) {
+				var f = runtime.lookup(token);
+				if (f) {
+					runtime.push(f);
+				} else {
+					throw "Quoted word does not exist";
+				}
+				return true;
+			};
+		},
+
 		'(': function() {
 			this.parse = function(token) {
 				if (token === ")") {
@@ -85,7 +97,7 @@ var runtime = {
 				} else if (token === "]") {
 					this.depth -= 1;
 					if (this.depth === 0) {
-						runtime.push(new Quotation(this.stack));
+						runtime.push(this.stack);
 						return true;
 					} else {
 						this.stack.push(token);
@@ -121,6 +133,47 @@ var runtime = {
 			};
 		},
 
+		'::': function() {
+			this.stack = [];
+
+			this.parse = function(token) {
+				if (token === '::') {
+					throw "TOKEN :: INSIDE Object DEFINITION";
+				}
+
+				if (token === ';') {
+					if (this.stack.length === 0) {
+						return true;
+					}
+
+					var name = this.stack.shift();
+
+					if (runtime.lookup(name)) {
+						throw "DUPLICATE WORD: " + name;
+					}
+
+					var args = "";
+					var body = "";
+					for (var i = 0; i < this.stack.length; i++) {
+						var v = this.stack[i];
+
+						args = args + v;
+						if (i < this.stack.length-1) {
+							args = args + ',';
+						}
+						body = body + "this[\"" + v + "\"] = " + v + ";\n";
+					}
+
+					var def = "function " + name + " (" + args + ") {\n" + body + "}";
+					eval('runtime.define("' + name + '", ' + def + ')');
+
+					return true;
+				}
+
+				this.stack.push(token);
+			};
+		},
+
 		'JS:': function() {
 			this.stack = [];
 
@@ -149,6 +202,15 @@ var runtime = {
 	exec: function(tokens) {
 		var tokens = tokens || [];
 
+		if (typeof tokens === 'function') {
+			var error = runtime.call(tokens);
+			if (error) {
+				console.error(error);
+				return;
+			}
+			return;
+		}
+
 		for (var i = 0; i < tokens.length; i++) {
 			var token = tokens[i];
 
@@ -163,12 +225,13 @@ var runtime = {
 					return;
 				}
 			} else {
-				if (token.constructor === Quotation) {
+				if (Array.isArray(token)) {
 					runtime.push(token)
 					continue;
 				}
 
 				var word = runtime.lookup(token);
+
 				if (word) {
 					if (typeof(word) === 'function') {
 						var error = runtime.call(word);
@@ -197,7 +260,13 @@ var runtime = {
 
 	print: function(v) {
 		if (typeof v === 'string') {
-			return '"' + v + '"';
+				return '"' + v + '"';
+		}
+		if (typeof v === 'function') {
+			return v.name;
+		}
+		if (typeof v === 'object') {
+			return v.constructor.name + '{' + '}';
 		}
 		return String(v);
 	}

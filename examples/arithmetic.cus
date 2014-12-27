@@ -1,1 +1,13 @@
-JS: math.sin Math.sin ;
+:: Point x y ;
+
+: <Point> ( x y -- Point ) \ Point boa ;
+
+: Point? ( o -- bool ) \ Point instanceof ;
+
+: Point.x ( Point -- x ) " x " -> ;
+: Point.y ( Point -- y ) " y " -> ;
+: Point.xy ( Point -- x y ) [ " x " -> ] [ " y " -> ] bi ;
+
+: Point.x= ( Point x -- Point ) " x " swap <- ;
+: Point.y= ( Point y -- Point ) " y " swap <- ;
+: Point.xy= ( Point x y -- Point ) [ " x " swap <- ] dip " y " swap <- ;
