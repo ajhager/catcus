@@ -1,5 +1,8 @@
-Array.prototype.toString = function() {
-	return "{ " + this.join(' ') + " }";
+Function.prototype.toString = function() {
+	if (this.name === '') {
+		return "{ " + this.tokens.join(' ') + " }";
+	}
+	return this.name;
 };
 
 var runtime = {
@@ -18,7 +21,7 @@ var runtime = {
 		return this.parser;
 	},
 
-	namespace: {},
+	namespace: global,
 	define: function(word, func) {
 		this.namespace[word] = func;
 	},
@@ -28,7 +31,7 @@ var runtime = {
 	call: function(word, con) {
 		var argc = word.length
 		var argv = this.pop(argc);
-		if (argv.length == argc) {
+		if (argv.length === argc) {
 			try {
 				if (con) {
 					function F() {
@@ -86,6 +89,21 @@ var runtime = {
 			};
 		},
 
+		'[': function() {
+			this.array = [];
+
+			this.parse = function(token) {
+				if (token == ']') {
+					runtime.push(this.array);
+					return true;
+				}
+
+				if (!isNaN(token)) {
+					this.array.push(Number(token));
+				}
+			};
+		},
+
 		'{': function() {
 			this.stack = [];
 			this.depth = 1;
@@ -97,7 +115,11 @@ var runtime = {
 				} else if (token === "}") {
 					this.depth -= 1;
 					if (this.depth === 0) {
-						runtime.push(this.stack);
+						var lambda = function() {
+							runtime.exec(this.tokens);
+						};
+						lambda.tokens = this.stack;
+						runtime.push(lambda);
 						return true;
 					} else {
 						this.stack.push(token);
@@ -225,8 +247,12 @@ var runtime = {
 					return;
 				}
 			} else {
-				if (Array.isArray(token)) {
-					runtime.push(token)
+				if (typeof token === 'function') {
+					var error = runtime.call(token);
+					if (error) {
+						console.error(error);
+						return;
+					}
 					continue;
 				}
 
@@ -262,11 +288,11 @@ var runtime = {
 		if (typeof v === 'string') {
 				return '"' + v + '"';
 		}
-		if (typeof v === 'function') {
-			return v.name;
+		if (Array.isArray(v)) {
+			return "[ " + v.join(' ') + " ]";
 		}
 		if (typeof v === 'object') {
-			return v.constructor.name + '{' + '}';
+			return v.constructor.name + JSON.stringify(v);
 		}
 		return String(v);
 	}

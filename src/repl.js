@@ -6,7 +6,7 @@ var readline = require('readline');
 var runtime = require('./runtime');
 
 module.exports = function() {
-	var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.1\n") + "   )   (\n");
+	var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.2\n") + "   )   (\n");
 
 	console.log(banner);
 
