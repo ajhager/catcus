@@ -45,7 +45,8 @@ module.exports = function() {
 
 	repl.on('line', function(line) {
 		var tokens = lex(line);
-		var ast = parse(tokens);
+		var code = parse(tokens);
+		console.dir(code);
 		// var code = compile(ast);
 		// vm.runInNewContext(code, context, 'eval');
 		// console.log(colors.white.bold(formatStack(context.stack)));
