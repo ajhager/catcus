@@ -197,11 +197,22 @@ var lexIdentifier = function(lexer) {
 			if ('\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF) {
 				lexer.backup();
 
-				var value = lexer.span();
-				if (value == 'true' || value == 'false' || value == 'null' || value == 'undefined') {
-					lexer.emit(token.Builtin);
-				} else {
-					lexer.emit(token.Identifier);
+				switch (lexer.span()) {
+					case 'true':
+					case 'false':
+						lexer.emit(token.Boolean);
+						break;
+					case 'null':
+						lexer.emit(token.Null);
+						break;
+					case 'undefined':
+						lexer.emit(token.Undefined);
+						break;
+					case 'NaN':
+						lexer.emit(token.NaN);
+						break;
+					default:
+						lexer.emit(token.Identifier);
 				}
 
 				return lexRoot;

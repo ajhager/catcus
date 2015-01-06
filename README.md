@@ -53,7 +53,7 @@ catcus> 10 dup * .
 
 ### Builtins
 
-* true false null undefined
+* true false null undefined NaN
 
 ### Functions
 

@@ -4,6 +4,9 @@ module.exports = {
 	Comment: "TokenComment",
 	Number: "TokenNumber",
 	String: "TokenString",
-	Builtin: "TokenBuiltin",
+	Boolean: "TokenBoolean",
+	Null: "TokenNull",
+	Undefined: "TokenUndefined",
+	NaN: "TokenNaN",
 	Identifier: "TokenIdentifier",
 };
