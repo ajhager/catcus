@@ -1,25 +1,5 @@
 ( Primitives )
 
-JS: true
-	function() {
-		runtime.push(true);
-	} ;
-
-JS: false
-	function() {
-		runtime.push(false);
-	} ;
-
-JS: null
-	function() {
-		runtime.push(null);
-	} ;
-
-JS: undefined
-	function() {
-		runtime.push(undefined);
-	} ;
-
 JS: call
 	function call(v1) {
 		runtime.exec(v1);
