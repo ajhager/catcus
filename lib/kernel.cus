@@ -7,17 +7,17 @@ JS: mul
 end
 
 JS: sub
-	"var catcus1 = catcus.pop();"
+	"catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() - catcus1);"
 end
 
 JS: div
-	"var catcus1 = catcus.pop();"
+	"catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() / catcus1);"
 end
 
 JS: mod
-	"var catcus1 = catcus.pop();"
+	"catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() % catcus1);"
 end
 
@@ -25,55 +25,152 @@ JS: print
 	"console.log(catcus.pop());"
 end
 
-/*
-( Primitives )
+JS: eq
+	"catcus.push(catcus.pop() === catcus.pop());"
+end
 
+JS: neq
+	"catcus.push(catcus.pop() !== catcus.pop());"
+end
+
+JS: lt
+	"catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() < catcus1);"
+end
+
+JS: lte
+	"catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() <= catcus1);"
+end
+
+JS: gt
+	"catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() > catcus1);"
+end
+
+JS: gte
+	"catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() >= catcus1);"
+end
+
+JS: dup
+	"catcus1 = catcus.pop();"
+	"catcus.push(catcus1);"
+	"catcus.push(catcus1);"
+end
+
+JS: dup2
+	"catcus1 = catcus.pop();"
+	"catcus2 = catcus.pop();"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+end
+
+JS: dup3
+	"catcus1 = catcus.pop();"
+	"catcus2 = catcus.pop();"
+	"catcus3 = catcus.pop();"
+	"catcus.push(catcus3);"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+	"catcus.push(catcus3);"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+end
+
+JS: dup4
+	"catcus1 = catcus.pop();"
+	"catcus2 = catcus.pop();"
+	"catcus3 = catcus.pop();"
+	"catcus4 = catcus.pop();"
+	"catcus.push(catcus4);"
+	"catcus.push(catcus3);"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+	"catcus.push(catcus4);"
+	"catcus.push(catcus3);"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+end
+
+JS: drop
+	"catcus.pop();"
+end
+
+JS: drop2
+	"catcus.pop();"
+	"catcus.pop();"
+end
+
+JS: drop3
+	"catcus.pop();"
+	"catcus.pop();"
+	"catcus.pop();"
+end
+
+JS: drop4
+	"catcus.pop();"
+	"catcus.pop();"
+	"catcus.pop();"
+	"catcus.pop();"
+end
+
+JS: swap
+	"catcus1 = catcus.pop();"
+	"catcus2 = catcus.pop();"
+	"catcus.push(catcus1);"
+	"catcus.push(catcus2);"
+end
+
+/*
 JS: call
 	function call(v1) {
-		runtime.exec(v1);
+		catcus.exec(v1);
 	} ;
 
 JS: new
 	function neww(v1) {
-		runtime.push(new v1());
+		catcus.push(new v1());
 	} ;
 
 JS: boa
 	function boa(v1) {
-		runtime.call(v1, true);
+		catcus.call(v1, true);
 	} ;
 
 JS: instanceof
 	function instanceoff(v1, v2) {
-		runtime.push(v1 instanceof v2);
+		catcus.push(v1 instanceof v2);
 	} ;
 
 JS: get
 	function get(v1, v2) {
-		runtime.push(v1[v2]);
+		catcus.push(v1[v2]);
 	} ;
 
 JS: set
 	function set(v1, v2, v3) {
 		v1[v2] = v3;
-		runtime.push(v1);
+		catcus.push(v1);
 	} ;
 
 JS: compose
 	function compose(v1, v2) {
 		v1.tokens = v1.tokens.concat(v2.tokens);
-		runtime.push(v1);
+		catcus.push(v1);
 	} ;
 
 JS: curry
 	function curry(v1, v2) {
 		v2.tokens.unshift(v1);
-		runtime.push(v2);
+		catcus.push(v2);
 	} ;
 
 JS: clear
 	function clear() {
-		runtime.clear();
+		catcus.clear();
 	} ;
 
 JS: exit
@@ -81,134 +178,47 @@ JS: exit
 		process.exit();
 	} ;
 
-JS: .
-	function pp(v1) {
-		console.log(runtime.print(v1));
-	} ;
-
-JS: ==
-	function eq(v1, v2) {
-		runtime.push(v1 === v2);
-	} ;
-
-JS: !=
-	function neq(v1, v2) {
-		runtime.push(v1 !== v2);
-	} ;
-
-JS: <
-	function lt(v1, v2) {
-		runtime.push(v1 < v2);
-	} ;
-
-JS: <=
-	function lteq(v1, v2) {
-		runtime.push(v1 <= v2);
-	} ;
-
-JS: >
-	function gt(v1, v2) {
-		runtime.push(v1 > v2);
-	} ;
-
-JS: >=
-	function gteq(v1, v2) {
-		runtime.push(v1 >= v2);
-	} ;
-
-JS: drop function(x) { } ;
-
-JS: 2drop function(x, y) { } ;
-
-JS: 3drop function(x, y, z) { } ;
-
-JS: 4drop function(w, x, y, z) { } ;
-
-JS: dup
-	function dup(v1) {
-		runtime.push(v1);
-		runtime.push(v1);
-	} ;
-
-JS: 2dup
-	function(v1, v2) {
-		runtime.push(v1);
-		runtime.push(v2);
-		runtime.push(v1);
-		runtime.push(v2);
-	} ;
-
-JS: 3dup
-	function(v1, v2, v3) {
-		runtime.push(v1);
-		runtime.push(v2);
-		runtime.push(v3);
-		runtime.push(v1);
-		runtime.push(v2);
-		runtime.push(v3);
-	} ;
-
-JS: 4dup
-	function(v1, v2, v3, v4) {
-		runtime.push(v1);
-		runtime.push(v2);
-		runtime.push(v3);
-		runtime.push(v4);
-		runtime.push(v1);
-		runtime.push(v2);
-		runtime.push(v3);
-		runtime.push(v4);
-	} ;
-
 JS: nip
 	function nip(v1, v2) {
-		runtime.push(v2);
+		catcus.push(v2);
 	} ;
 
 JS: over
 	function over(v1, v2) {
-		runtime.push(v1);
-		runtime.push(v2);
-		runtime.push(v1);
+		catcus.push(v1);
+		catcus.push(v2);
+		catcus.push(v1);
 	} ;
 
 JS: pick
 	function pick(v1, v2, v3) {
-		runtime.push(v1);
-		runtime.push(v2);
-		runtime.push(v3);
-		runtime.push(v1);
+		catcus.push(v1);
+		catcus.push(v2);
+		catcus.push(v3);
+		catcus.push(v1);
 	} ;
 
 JS: rot
 	function rot(v1, v2, v3) {
-		runtime.push(v2);
-		runtime.push(v3);
-		runtime.push(v1);
-	} ;
-
-JS: swap
-	function swap(v1, v2) {
-		runtime.push(v2);
-		runtime.push(v1);
+		catcus.push(v2);
+		catcus.push(v3);
+		catcus.push(v1);
 	} ;
 
 JS: dip
 	function dip(v1, v2) {
-		runtime.exec(v2);
-		runtime.push(v1);
+		catcus.exec(v2);
+		catcus.push(v1);
 	} ;
 
 JS: if
 	function ife(v1, v2, v3) {
 		if (v1) {
-			runtime.exec(v2);
+			catcus.exec(v2);
 		} else {
-			runtime.exec(v3);
+			catcus.exec(v3);
 		}
 	} ;
-
-( Combinators )
 
 : keep over { call } dip ;
 : 2keep { 2dup } dip 2dip ;
@@ -218,9 +228,6 @@ JS: if
 : 2dip ( x y quot -- x y ) swap { dip } dip ;
 : 3dip ( x y z quot -- x y z ) swap { 2dip } dip ;
 : when ( cond quot -- x ) swap { call } { drop } if ;
-
-( Looping )
-
 : do dup 2dip ;
 : while swap do compose { loop } curry when ;
 : until { { not } compose } dip while ;
