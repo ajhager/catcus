@@ -3,7 +3,7 @@ var token = require('./token');
 
 var EOF = -1;
 var isWhitespace = function(c) {
-	return '\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0;
+	return '\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF;
 }
 
 var Lexer = function(input) {
@@ -18,7 +18,7 @@ Lexer.prototype.run = function() {
 	var state = lexRoot;
 	while (state) {
 		state = state(this);
-	};
+	}
 };
 
 Lexer.prototype.emit = function(tokenType) {
@@ -80,7 +80,7 @@ Lexer.prototype.span = function() {
 };
 
 exports.lex = function(input) {
-	lexer = new Lexer(input);
+	var lexer = new Lexer(input);
 	lexer.run();
 	return lexer.tokens;
 };
@@ -138,7 +138,7 @@ var lexMultiComment = function(lexer) {
 					lexer.emit(token.Comment);
 					return lexRoot;
 				}
-				l.backup();
+				lexer.backup();
 		}
 	}
 	return null;
@@ -163,7 +163,7 @@ var lexNumber = function(lexer) {
 	}
 
 	var c = lexer.peek();
-	if ('\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF) {
+	if (isWhitespace(c)) {
 		lexer.emit(token.Number);
 		return lexRoot;
 	}
@@ -193,8 +193,18 @@ var lexString = function(lexer) {
 var lexIdentifier = function(lexer) {
 	while (true) {
 		var c = lexer.next();
+
+		if (c == ':') {
+			if (isWhitespace(lexer.peek())) {
+				lexer.emit(token.Parser);
+				return lexRoot;
+			} else {
+				return lexer.error("colon allowed at the end of a parsing word: '" + lexer.span() + "'");
+			}
+		}
+
 		if (!unicode.ECMA.part.test(c) || c == EOF) {
-			if ('\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF) {
+			if (isWhitespace(c)) {
 				lexer.backup();
 
 				switch (lexer.span()) {

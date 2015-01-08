@@ -1,3 +1,31 @@
+JS: add
+	"catcus.push(catcus.pop() + catcus.pop());"
+end
+
+JS: mul
+	"catcus.push(catcus.pop() * catcus.pop());"
+end
+
+JS: sub
+	"var catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() - catcus1);"
+end
+
+JS: div
+	"var catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() / catcus1);"
+end
+
+JS: mod
+	"var catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() % catcus1);"
+end
+
+JS: print
+	"console.log(catcus.pop());"
+end
+
+/*
 ( Primitives )
 
 JS: call
@@ -56,31 +84,6 @@ JS: exit
 JS: .
 	function pp(v1) {
 		console.log(runtime.print(v1));
-	} ;
-
-JS: +
-	function add(v1, v2) {
-		runtime.push(v1 + v2);
-	} ;
-
-JS: -
-	function sub(v1, v2) {
-		runtime.push(v1 - v2);
-	} ;
-
-JS: *
-	function mul(v1, v2) {
-		runtime.push(v1 * v2);
-	} ;
-
-JS: /
-	function div(v1, v2) {
-		runtime.push(v1 / v2);
-	} ;
-
-JS: %
-	function mod(v1, v2) {
-		runtime.push(v1 % v2);
 	} ;
 
 JS: ==
@@ -222,3 +225,4 @@ JS: if
 : while swap do compose { loop } curry when ;
 : until { { not } compose } dip while ;
 : loop { call } keep { loop } curry when ;
+*/

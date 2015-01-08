@@ -1,8 +1,8 @@
 var token = require('./token');
 
-var Parser = function(tokens) {
+var Parser = function(tokens, context) {
 	this.tokens = tokens;
-	this.context = {};
+	this.context = context || {};
 	this.pos = 0;
 	this.code = [];
 };
@@ -55,10 +55,10 @@ Parser.prototype.define = function(name, value) {
 	this.context[name] = value;
 };
 
-exports.parse = function(tokens) {
-	var parser = new Parser(tokens);
+exports.parse = function(tokens, context) {
+	var parser = new Parser(tokens, context);
 	parser.run();
-	return parser.code;
+	return parser.code.join("\n");
 };
 
 var parseRoot = function(parser) {
@@ -71,7 +71,7 @@ var parseRoot = function(parser) {
 				console.error(t.value);
 				return null;
 			case token.Comment:
-				parser.emit(t.value);
+				// parser.emit(t.value);
 				break;
 			case token.Number:
 			case token.String:
@@ -81,11 +81,13 @@ var parseRoot = function(parser) {
 			case token.NaN:
 				parser.emit("catcus.push(" + t.value + ");");
 				break;
-			case token.Identifier:
-				if (t.value == "function") {
-					return parseDef;
+			case token.Parser:
+				var parserWord = parsers[t.value];
+				if (parserWord) {
+					return parserWord;
 				}
-
+				break;
+			case token.Identifier:
 				var func = parser.lookup(t.value);
 				if (func) {
 					parser.emitAll(func);
@@ -101,7 +103,7 @@ var parseRoot = function(parser) {
 	}
 };
 
-var parseDef = function(parser) {
+var parseJS = function(parser) {
 	var name = parser.expect(token.Identifier);
 	if (!name) {
 		return console.error("Def name must be a valid identifier");
@@ -110,7 +112,7 @@ var parseDef = function(parser) {
 	var lines = [];
 	var line;
 	while (line = parser.accept(token.String)) {
-		lines.push(line.slice(1, line.length-1));
+		lines.push(line.slice(1, line.length - 1));
 	}
 
 	var end = parser.expect(token.Identifier);
@@ -120,4 +122,8 @@ var parseDef = function(parser) {
 
 	parser.define(name, lines);
 	return parseRoot;
+};
+
+var parsers = {
+	"JS:": parseJS,
 };

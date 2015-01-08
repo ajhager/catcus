@@ -42,14 +42,26 @@ module.exports = function() {
 
 	var repl = readline.createInterface(process.openStdin(), process.stdout);
 	repl.setPrompt(colors.magenta('catcus> '), 8)
+	var context = {};
+
+	var kernel = path.dirname(__dirname) + '/lib/kernel.cus';
+	var file = fs.readFileSync(kernel, 'utf8');
+	var tokens = lex(file);
+	var code = parse(tokens, context);
+
+	var env = { catcus: [], require: require, exports: exports };
+
+	var name;
+	for (name in global) {
+		env[name] = global[name];
+	}
 
 	repl.on('line', function(line) {
-		var tokens = lex(line);
-		var code = parse(tokens);
-		console.dir(code);
-		// var code = compile(ast);
-		// vm.runInNewContext(code, context, 'eval');
-		// console.log(colors.white.bold(formatStack(context.stack)));
+		tokens = lex(line);
+		code = parse(tokens, context);
+		// console.log(code);
+		vm.runInNewContext(code, env, 'eval');
+		console.log(colors.white.bold(formatStack(env.catcus)));
 		repl.prompt();
 	});
 

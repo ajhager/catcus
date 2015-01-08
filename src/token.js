@@ -9,4 +9,5 @@ module.exports = {
 	Undefined: "TokenUndefined",
 	NaN: "TokenNaN",
 	Identifier: "TokenIdentifier",
+	Parser: "TokenParser",
 };
