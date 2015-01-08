@@ -1,3 +1,11 @@
+JS: clear
+	"catcus = [];"
+end
+
+JS: exit
+	"process.exit();"
+end
+
 JS: add
 	"catcus.push(catcus.pop() + catcus.pop());"
 end
@@ -172,112 +180,53 @@ JS: swap
 	"catcus.push(catcus2);"
 end
 
-/*
-JS: call
-	function call(v1) {
-		catcus.exec(v1);
-	} ;
-
-JS: new
-	function neww(v1) {
-		catcus.push(new v1());
-	} ;
-
-JS: boa
-	function boa(v1) {
-		catcus.call(v1, true);
-	} ;
-
-JS: instanceof
-	function instanceoff(v1, v2) {
-		catcus.push(v1 instanceof v2);
-	} ;
-
-JS: get
-	function get(v1, v2) {
-		catcus.push(v1[v2]);
-	} ;
-
-JS: set
-	function set(v1, v2, v3) {
-		v1[v2] = v3;
-		catcus.push(v1);
-	} ;
-
-JS: compose
-	function compose(v1, v2) {
-		v1.tokens = v1.tokens.concat(v2.tokens);
-		catcus.push(v1);
-	} ;
-
-JS: curry
-	function curry(v1, v2) {
-		v2.tokens.unshift(v1);
-		catcus.push(v2);
-	} ;
-
-JS: clear
-	function clear() {
-		catcus.clear();
-	} ;
-
-JS: exit
-	function exit() {
-		process.exit();
-	} ;
-
 JS: nip
-	function nip(v1, v2) {
-		catcus.push(v2);
-	} ;
+	"catcus1 = catcus.pop();"
+	"catcus.pop();"
+	"catcus.push(catcus1);"
+end
 
+JS: nip2
+	"catcus1 = catcus.pop();"
+	"catcus.pop();"
+	"catcus.pop();"
+	"catcus.push(catcus1);"
+end
+	
 JS: over
-	function over(v1, v2) {
-		catcus.push(v1);
-		catcus.push(v2);
-		catcus.push(v1);
-	} ;
+	"catcus1 = catcus.pop();"
+	"catcus2 = catcus.pop();"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+	"catcus.push(catcus2);"
+end
+
+JS: over2
+	"catcus1 = catcus.pop();"
+	"catcus2 = catcus.pop();"
+	"catcus3 = catcus.pop();"
+	"catcus.push(catcus3);"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+	"catcus.push(catcus3);"
+	"catcus.push(catcus2);"
+end
 
 JS: pick
-	function pick(v1, v2, v3) {
-		catcus.push(v1);
-		catcus.push(v2);
-		catcus.push(v3);
-		catcus.push(v1);
-	} ;
+	"catcus1 = catcus.pop();"
+	"catcus2 = catcus.pop();"
+	"catcus3 = catcus.pop();"
+	"catcus.push(catcus3);"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+	"catcus.push(catcus3);"
+end
 
 JS: rot
-	function rot(v1, v2, v3) {
-		catcus.push(v2);
-		catcus.push(v3);
-		catcus.push(v1);
-	} ;
-
-JS: dip
-	function dip(v1, v2) {
-		catcus.exec(v2);
-		catcus.push(v1);
-	} ;
-
-JS: if
-	function ife(v1, v2, v3) {
-		if (v1) {
-			catcus.exec(v2);
-		} else {
-			catcus.exec(v3);
-		}
-	} ;
-
-: keep over { call } dip ;
-: 2keep { 2dup } dip 2dip ;
-: 2over ( x y z -- x y z x y ) pick pick ;
-: bi ( x p q -- ) { keep } dip call ;
-: 2bi ( x y p q -- ) { 2keep } dip call ;
-: 2dip ( x y quot -- x y ) swap { dip } dip ;
-: 3dip ( x y z quot -- x y z ) swap { 2dip } dip ;
-: when ( cond quot -- x ) swap { call } { drop } if ;
-: do dup 2dip ;
-: while swap do compose { loop } curry when ;
-: until { { not } compose } dip while ;
-: loop { call } keep { loop } curry when ;
-*/
+	"catcus1 = catcus.pop();"
+	"catcus2 = catcus.pop();"
+	"catcus3 = catcus.pop();"
+	"catcus.push(catcus2);"
+	"catcus.push(catcus1);"
+	"catcus.push(catcus3);"
+end
