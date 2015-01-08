@@ -5,7 +5,7 @@ var EOF = -1;
 var isWhitespace = function(c) {
 	return '\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF;
 }
-var operators = ['+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^'];
+var operators = ['+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^', '='];
 
 var Lexer = function(input) {
 	this.input = input;
@@ -96,41 +96,10 @@ var lexRoot = function(lexer) {
 			case isWhitespace(c):
 				lexer.ignore();
 				break;
-			case operators.indexOf(c) > -1 || c == '=':
+			case operators.indexOf(c) > -1:
 				lexer.backup();
 				return lexOperator;
-			/*
-				lexer.emit(token.Operator);
-			case ['<', '>'].indexOf(c) > -1:
-				var nc = lexer.next();
-				if (isWhitespace(nc)) {
-					lexer.backup();
-					lexer.emit(token.Operator);
-			  } else if (nc == '=' && isWhitespace(lexer.next())) {
-					lexer.backup();
-					lexer.emit(token.Operator);
-				} else {
-					return lexer.error('no operator named: ' + lexer.span());
-				}
-				break;
-			case ['!', '='].indexOf(c) > -1:
-				if (lexer.next() == '=' && isWhitespace(lexer.next())) {
-					lexer.backup();
-					lexer.emit(token.Operator);
-				} else {
-					return lexer.error('no operator named: ' + lexer.span());
-				}
-				break;
-			case c == '/':
-				var nc = lexer.next();
-				if (nc == '/') {
-					return lexComment;
-				} else if (nc == '*') {
-					return lexMultiComment;
-				}
-				return lexer.error('bad comment syntax: ' + lexer.span());
-			*/
-			case c == '+' || c == '-' || '0' <= c && c <= '9':
+			case '0' <= c && c <= '9':
 				lexer.backup();
 				return lexNumber;
 			case c == '\"':
@@ -168,6 +137,12 @@ var lexOperator = function(lexer) {
 		return lexMultiComment;
 	}
 
+	// Plus or minus number
+	if ((op1 == '+' || op1 == '-') && ('0' <= op2 && op2 <= '9')) {
+		lexer.backup();
+		return lexNumber;
+	}
+
 	// There are no operators of length 3.
 	if (!isWhitespace(lexer.next())) {
 		return lexer.error('no operator named: ' + lexer.span());
@@ -176,6 +151,8 @@ var lexOperator = function(lexer) {
 
 	// Length two operators.
 	switch (true) {
+		case op1 == '+' && op2 == '+':
+		case op1 == '-' && op2 == '-':
 		case op1 == '|' && op2 == '|':
 		case op1 == '&' && op2 == '&':
 		case op1 == '<' && op2 == '<':
@@ -219,8 +196,6 @@ var lexMultiComment = function(lexer) {
 };
 
 var lexNumber = function(lexer) {
-	lexer.accept("+-");
-
 	var digits = "0123456789";
 	if (lexer.accept("0") && lexer.accept("xX")) {
 		digits = "0123456789abcdefABCDEF";

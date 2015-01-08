@@ -14,6 +14,8 @@ var operators = {
 	'<': 'lt',
 	'>': 'gt',
 	'|': 'OR',
+	'++': 'inc',
+	'--': 'dec',
 	'||': 'or',
 	'&&': 'and',
 	'<<': 'LSHIFT',
@@ -114,6 +116,7 @@ var parseRoot = function(parser) {
 			case token.Operator:
 				t.type = token.Identifier;
 				t.value = operators[t.value];
+				// fallthrough
 			case token.Identifier:
 				var func = parser.lookup(t.value);
 				if (func) {

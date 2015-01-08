@@ -2,13 +2,21 @@ JS: add
 	"catcus.push(catcus.pop() + catcus.pop());"
 end
 
-JS: mul
-	"catcus.push(catcus.pop() * catcus.pop());"
+JS: inc
+	"catcus.push(catcus.pop() + 1);"
 end
 
 JS: sub
 	"catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() - catcus1);"
+end
+
+JS: dec
+	"catcus.push(catcus.pop() - 1);"
+end
+
+JS: mul
+	"catcus.push(catcus.pop() * catcus.pop());"
 end
 
 JS: div
