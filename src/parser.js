@@ -145,9 +145,9 @@ var parseJS = function(parser) {
 		lines.push(line.slice(1, line.length - 1));
 	}
 
-	var end = parser.expect(token.Identifier);
-	if (end != 'end') {
-		return console.error("Def should be closed with 'end'");
+	var end = parser.expect(token.Operator);
+	if (end != ';') {
+		return console.error("JS: should be closed with ';'");
 	}
 
 	parser.define(name, lines);

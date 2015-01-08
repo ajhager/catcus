@@ -21,7 +21,7 @@ console['error'] = function() {
 	oldError(colors.red(args.join(' ')));
 };
 
-var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.3\n") + "   )   (\n");
+var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.4\n") + "   )   (\n");
 
 var formatStack = function(stack) {
 	var output = ['=>'];
