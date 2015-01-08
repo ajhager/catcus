@@ -7,7 +7,7 @@
   A concatenative language that compiles to JavaScript
 ```
 
-Just an experiment. Nothing works. Everything is broken.
+Just an experiment. Nothing will work. Everything is broken.
 
 ## Quick Start
 
@@ -22,6 +22,12 @@ catcus> 10 dup * .
 ## Features
 
 * Numbers, strings, single and multi line comments, builtin values like null.
+* All js number formats except octal.
+* Double quote js strings.
+* All js operators.
+* Single and multi line js comments.
+* All js builtins: true, false, null, undefined, NaN, etc.
+* UTF8 identifiers with the same rules as js.
 * Define inline javascript functions with:
 
 ```
@@ -31,6 +37,8 @@ JS: helloWorld
 	"console.log(catcus.pop() + catcus.pop());"
 end
 ```
+
+where JS: is a parsing word that swallows strings of js code until the 'end'.
 
 ## TODO
 
@@ -45,15 +53,15 @@ end
 * Objects:
 
 ```
-OBJ: Point x y ;
+OBJ: Point x y end
 
-: <Point> ( x y -- Point ) \ Point boa ;
+FUNC: <Point> ( x y -- Point ) \ Point boa end
 
-: Point? ( o -- bool ) \ Point instanceof ;
+FUNC: Point? ( o -- bool ) \ Point instanceof end
 
-: Point.x ( Point -- x ) "x" -> ;
-: Point.y ( Point -- y ) "y" -> ;
+FUNC: Point.x ( Point -- x ) "x" -> end
+FUNC: Point.y ( Point -- y ) "y" -> end
 
-: Point.x= ( Point x -- Point ) "x" swap set ;
-: Point.y= ( Point y -- Point ) "y" swap set ;
+FUNC: Point.x= ( Point x -- Point ) "x" swap set end
+FUNC: Point.y= ( Point y -- Point ) "y" swap set end
 ```

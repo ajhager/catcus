@@ -6,7 +6,6 @@ var util = require('util');
 var colors = require('colors/safe');
 var readline = require('readline');
 
-//var compile = require('./compiler').compile;
 var lex = require('./lexer').lex;
 var parse = require('./parser').parse;
 
@@ -59,7 +58,6 @@ module.exports = function() {
 	repl.on('line', function(line) {
 		tokens = lex(line);
 		code = parse(tokens, context);
-		//console.log(code);
 		vm.runInNewContext(code, env, 'eval');
 		console.log(colors.white.bold(formatStack(env.catcus)));
 		repl.prompt();
