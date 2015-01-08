@@ -10,4 +10,5 @@ module.exports = {
 	NaN: "TokenNaN",
 	Identifier: "TokenIdentifier",
 	Parser: "TokenParser",
+	Operator: "TokenOperator",
 };

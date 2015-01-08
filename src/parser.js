@@ -1,5 +1,29 @@
 var token = require('./token');
 
+var operators = {
+	'+': 'add',
+	'-': 'sub',
+	'*': 'mul',
+	'/': 'div',
+	'%': 'mod',
+	'.': 'print',
+	'&': 'AND',
+	'~': 'NOT',
+	'!': 'not',
+	'^': 'XOR',
+	'<': 'lt',
+	'>': 'gt',
+	'|': 'OR',
+	'||': 'or',
+	'&&': 'and',
+	'<<': 'LSHIFT',
+	'>>': 'RSHIFT',
+	'<=': 'lte',
+	'>=': 'gte',
+	'==': 'eq',
+	'!=': 'neq',
+};
+
 var Parser = function(tokens, context) {
 	this.tokens = tokens;
 	this.context = context || {};
@@ -87,6 +111,9 @@ var parseRoot = function(parser) {
 					return parserWord;
 				}
 				break;
+			case token.Operator:
+				t.type = token.Identifier;
+				t.value = operators[t.value];
 			case token.Identifier:
 				var func = parser.lookup(t.value);
 				if (func) {

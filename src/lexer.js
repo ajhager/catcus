@@ -5,6 +5,7 @@ var EOF = -1;
 var isWhitespace = function(c) {
 	return '\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF;
 }
+var operators = ['+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^'];
 
 var Lexer = function(input) {
 	this.input = input;
@@ -95,6 +96,31 @@ var lexRoot = function(lexer) {
 			case isWhitespace(c):
 				lexer.ignore();
 				break;
+			case operators.indexOf(c) > -1 || c == '=':
+				lexer.backup();
+				return lexOperator;
+			/*
+				lexer.emit(token.Operator);
+			case ['<', '>'].indexOf(c) > -1:
+				var nc = lexer.next();
+				if (isWhitespace(nc)) {
+					lexer.backup();
+					lexer.emit(token.Operator);
+			  } else if (nc == '=' && isWhitespace(lexer.next())) {
+					lexer.backup();
+					lexer.emit(token.Operator);
+				} else {
+					return lexer.error('no operator named: ' + lexer.span());
+				}
+				break;
+			case ['!', '='].indexOf(c) > -1:
+				if (lexer.next() == '=' && isWhitespace(lexer.next())) {
+					lexer.backup();
+					lexer.emit(token.Operator);
+				} else {
+					return lexer.error('no operator named: ' + lexer.span());
+				}
+				break;
 			case c == '/':
 				var nc = lexer.next();
 				if (nc == '/') {
@@ -103,6 +129,7 @@ var lexRoot = function(lexer) {
 					return lexMultiComment;
 				}
 				return lexer.error('bad comment syntax: ' + lexer.span());
+			*/
 			case c == '+' || c == '-' || '0' <= c && c <= '9':
 				lexer.backup();
 				return lexNumber;
@@ -114,6 +141,53 @@ var lexRoot = function(lexer) {
 			default:
 				return lexer.error("bad character: '" + c + "'");
 		}
+	}
+};
+
+var lexOperator = function(lexer) {
+	var op1 = lexer.next();
+	var op2 = lexer.next();
+
+	// Single operator
+	if (isWhitespace(op2)) {
+		lexer.backup();
+		if (op1 == '=') {
+			return lexer.error('no operator named: ' + lexer.span());
+		}
+		lexer.emit(token.Operator);
+		return lexRoot;
+	}
+
+	// Comment
+	if (op1 == '/' && op2 == '/') {
+		return lexComment;
+	}
+
+	// Multiline comment
+	if (op1 == '/' && op2 == '*') {
+		return lexMultiComment;
+	}
+
+	// There are no operators of length 3.
+	if (!isWhitespace(lexer.next())) {
+		return lexer.error('no operator named: ' + lexer.span());
+	}
+	lexer.backup();
+
+	// Length two operators.
+	switch (true) {
+		case op1 == '|' && op2 == '|':
+		case op1 == '&' && op2 == '&':
+		case op1 == '<' && op2 == '<':
+		case op1 == '<' && op2 == '=':
+		case op1 == '>' && op2 == '>':
+		case op1 == '>' && op2 == '=':
+		case op1 == '=' && op2 == '=':
+		case op1 == '!' && op2 == '=':
+			lexer.emit(token.Operator);
+			return lexRoot;
+		default:
+			return lexer.error('no operator named: ' + lexer.span());
 	}
 };
 

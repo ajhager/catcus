@@ -53,6 +53,46 @@ JS: gte
 	"catcus.push(catcus.pop() >= catcus1);"
 end
 
+JS: and
+	"catcus.push(catcus.pop() && catcus.pop());"
+end
+
+JS: or
+	"catcus.push(catcus.pop() || catcus.pop());"
+end
+
+JS: not
+	"catcus.push(!catcus.pop());"
+end
+
+JS: AND
+	"catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() & catcus1);"
+end
+
+JS: OR
+	"catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() | catcus1);"
+end
+
+JS: NOT
+	"catcus.push(~catcus.pop());"
+end
+
+JS: XOR
+	"catcus.push(^catcus.pop());"
+end
+
+JS: LSHIFT
+	"catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() << catcus1);"
+end
+
+JS: RSHIFT
+	"catcus1 = catcus.pop();"
+	"catcus.push(catcus.pop() >> catcus1);"
+end
+
 JS: dup
 	"catcus1 = catcus.pop();"
 	"catcus.push(catcus1);"

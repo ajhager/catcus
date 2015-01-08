@@ -59,7 +59,7 @@ module.exports = function() {
 	repl.on('line', function(line) {
 		tokens = lex(line);
 		code = parse(tokens, context);
-		// console.log(code);
+		//console.log(code);
 		vm.runInNewContext(code, env, 'eval');
 		console.log(colors.white.bold(formatStack(env.catcus)));
 		repl.prompt();
