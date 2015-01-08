@@ -19,51 +19,33 @@ catcus> 10 dup * .
 => 100
 ```
 
-## Design
+## Features
 
-* The compiler takes code and compiles it to a function that takes a stack and returns a value.
-* Technically, the stack sent to the function is 'arguments'.
-* { dup dup dup } is anonymous function.
-* : duuup { dup dup dup } ; is a named function.
+* Numbers, strings, single and multi line comments, builtin values like null.
+* Define inline javascript functions with:
+
+```
+JS: helloWorld
+	"catcus.push('Hello, ');"
+	"catcus.push('World!!');"
+	"console.log(catcus.pop() + catcus.pop());"
+end
+```
+
+## TODO
+
+* `{ dup dup dup }` is an anonymous function.
+* `FUNC: duuup { dup dup dup } end` is a named function.
 * Use () to call a function with their default number of args.
 * Use (integer) to call with that many args.
-* So, '1 2 3 4 \ console.log (3)' is equivalent to console.log(4, 3, 2);
+* So, `'1 2 3 4 \ console.log (3)'` is equivalent to `console.log(4, 3, 2);`
+* Regex literals `/catcus[!?]+/`
+* Array literals: `[ space separated [ possibly nested ] values ]`
+* JS interop
+* Objects:
 
-## Literals
-
-* Number, String, RegExp, Array, Builtin, Function
-
-### Numbers
-
-* conventional decimal numbers:  0 1 5 137 1.3
-* decimal numbers in exponential form:  6.67e-11 -1.127e20
-* hexadecimal numbers, for example: 0xFF -0xCCFF 0xabcdef
-
-### Strings
-
-* "Anything between double quotes"
-
-### RegExps
-
-* /blahblah/
-
-### Arrays
-
-* [ space separated [ possibly nested ] values ]
-
-### Builtins
-
-* true false null undefined NaN
-
-### Functions
-
-* { space spearated { possibly nested } functions } 
-
-### Objects
-
-:: Point x y ;
-
-would generate:
+```
+OBJ: Point x y ;
 
 : <Point> ( x y -- Point ) \ Point boa ;
 
@@ -74,3 +56,4 @@ would generate:
 
 : Point.x= ( Point x -- Point ) "x" swap set ;
 : Point.y= ( Point y -- Point ) "y" swap set ;
+```
