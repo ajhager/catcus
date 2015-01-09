@@ -11,4 +11,5 @@ module.exports = {
 	Identifier: "TokenIdentifier",
 	Parser: "TokenParser",
 	Operator: "TokenOperator",
+	Function: "TokenFunction",
 };

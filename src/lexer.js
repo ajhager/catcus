@@ -96,7 +96,7 @@ var lexRoot = function(lexer) {
 			case isWhitespace(c):
 				lexer.ignore();
 				break;
-			case operators.indexOf(c) > -1:
+				case operators.indexOf(c) > -1:
 				lexer.backup();
 				return lexOperator;
 			case '0' <= c && c <= '9':
@@ -104,6 +104,9 @@ var lexRoot = function(lexer) {
 				return lexNumber;
 			case c == '\"':
 				return lexString;
+			case c == '{' || c == '}':
+				lexer.emit(token.Function);
+				break;
 			case unicode.ECMA.start.test(c):
 				lexer.backup();
 				return lexIdentifier;

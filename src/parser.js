@@ -113,6 +113,13 @@ var parseRoot = function(parser) {
 					return parserWord;
 				}
 				break;
+			case token.Function:
+				if (t.value == '{') {
+					parser.emit("catcus.push(function() {");
+				} else {
+					parser.emit("});");
+				}
+				break;
 			case token.Operator:
 				t.type = token.Identifier;
 				t.value = operators[t.value];

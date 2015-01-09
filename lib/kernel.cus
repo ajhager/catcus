@@ -166,3 +166,5 @@ JS: rot
 	"catcus.push(catcus2);"
 	"catcus.push(catcus1);"
 	"catcus.push(catcus3);" ;
+
+JS: call "catcus.pop()();" ;
