@@ -39,8 +39,8 @@ catcus> 10 dup * .
 ### Features
 
 * `CONSTANT: name value` defines a named value.
+* JS Return values.
 * Modules
-* Interop
 * Protocols
 * Transducers
 * CSP
