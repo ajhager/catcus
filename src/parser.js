@@ -98,6 +98,10 @@ var parseRoot = function(parser) {
 					return parseFunc;
 				}
 
+				if (t.value == '::') {
+					return parseObj;
+				}
+
 				var func = parser.lookup(t.value);
 				if (func) {
 					parser.emitAll(func);
@@ -158,5 +162,58 @@ var parseFunc = function(parser) {
 				console.error("unexpected token in func def " + t.type + " " + t.value);
 				return null;
 		}
+	}
+};
+
+var parseObj = function(parser) {
+	var name = parser.expect(token.Identifier);
+	if (!name) {
+		return console.error("obj def name must be a valid identifier");
+	}
+
+	var fields = [];
+	var lines = [
+		"function " + name + "() {",
+	];
+	while (true) {
+		var field = parser.expect(token.Identifier);
+		if (!field) {
+			return console.error("obj field must be a valid identifier");
+		}
+
+		if (field == ';') {
+			var args = "function " + name + "(";
+			var lines = [];
+			for (var i = 0; i < fields.length; i++) {
+				var field = fields[i];
+
+				args = args + field;
+				if (i < fields.length-1) {
+					args = args + ', ';
+				}
+				lines.push("this." + field + " = " + field + ";");
+			}
+			lines.unshift(args + ") {");
+			lines.push("}");
+
+			parser.emitAll(lines);
+
+			// Constructor
+			parser.define("$"+name, [
+				"var catcus1 = catcus.pop();",
+				"var catcus2 = catcus.pop();",
+				"catcus.push(new " + name + "(catcus2, catcus1));"
+			]);
+
+			// Instanceof
+			parser.define("is"+name, [
+				"var catcus1 = catcus.pop();",
+				"catcus.push(catcus1 instanceof " + name + ");",
+			]);
+
+			return parseRoot;
+		}
+
+		fields.push(field);
 	}
 };

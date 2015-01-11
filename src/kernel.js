@@ -397,14 +397,14 @@ module.exports = {
 	'get': [
 		"var catcus1 = catcus.pop();",
 		"var catcus2 = catcus.pop();",
-		"catcus.push(catcus1[catcus2]);",
+		"catcus.push(catcus2[catcus1]);",
 	],
 
 	'set': [
 		"var catcus1 = catcus.pop();",
 		"var catcus2 = catcus.pop();",
 		"var catcus3 = catcus.pop();",
-		"catcus1[catcus2] = catcus3;",
+		"catcus3[catcus2] = catcus1;",
 	],
 
 	'keep': [

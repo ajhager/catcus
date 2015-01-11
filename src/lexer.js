@@ -9,7 +9,7 @@ var EOF = -1;
 var isWhitespace = function(c) {
 	return '\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF;
 }
-var operators = [':', ';', '+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^', '='];
+var operators = ['\\', ':', ';', '+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^', '='];
 
 var Lexer = function(input) {
 	this.input = input;

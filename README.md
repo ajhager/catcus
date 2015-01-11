@@ -31,17 +31,17 @@ catcus> 10 dup * .
 * Simple array support.
 * `{ dup * }` to define, potentially nested, anonymous functions.
 * `: duuup dup dup ;` to define a function named duuup.
+* `:: Point x y ;` to define a constructor function.
 
 ## TODO
 
 ### Features
 
-* Integrate js-csp.
-* Object definitions
-* Module system.
 * `CONSTANT: name value` defines a named value.
+* Module system.
 * JS interop
 * Protocols (and transducers).
+* Integrate js-csp.
 
 ### Optimizations
 
