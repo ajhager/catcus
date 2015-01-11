@@ -194,14 +194,66 @@ JS: dip
 	"catcus1();"
 	"catcus.push(catcus2);" ;
 
+FUNC: dip2
+	swap { dip } dip ;
+
+JS: curry
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus.push(function() {"
+	"catcus.push(catcus2);"
+	"catcus1();"
+	"});" ;
+
+JS: compose
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus.push(function() {"
+	"catcus2();"
+	"catcus1();"
+	"});" ;
+
+JS: ifelse
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus.pop() ? catcus2() : catcus1();" ;
+
+JS: loop
+	"var catcus1 = catcus.pop();"
+	"while (true) {"
+	"catcus1();"
+	"if (!catcus.pop()) break;"
+	"}" ;
+
+// Call a function with a value on the stack,
+// restoring the value when the function returns.
 FUNC: keep
 	over { call } dip ;
 
+// Apply two functions to one value.
 FUNC: _bi
 	{ keep } dip call ;
 
+// Apply two functions to two values, respectively.
 FUNC: bi
 	{ dip } dip call ;
 
+// Apply one function to two values in turn.
 FUNC: bi_
 	dup bi ;
+
+// Apply three functions to one value.
+FUNC: _tri
+	{ { keep } dip keep } dip call ;
+
+// Apply three functions to three values, respectively.
+FUNC: tri
+	{ { dip2 } dip dip } dip call ;
+
+// Apply one function to three values in turn.
+FUNC: tri_
+	dup dup tri ;
+
+// Call a function if the value is true.
+FUNC: when
+	swap { call } { drop } ifelse ;
