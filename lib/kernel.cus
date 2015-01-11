@@ -225,6 +225,59 @@ JS: loop
 	"if (!catcus.pop()) break;"
 	"}" ;
 
+JS: array
+	"catcus.push([]);" ;
+
+JS: array1
+	"catcus.push([catcus.pop()]);" ;
+
+JS: array2
+	"var catcus1 = catcus.pop();"
+	"catcus.push([catcus.pop(), catcus1]);" ;
+
+JS: array3
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus.push([catcus.pop(), catcus2, catcus1]);" ;
+
+JS: array4
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"var catcus3 = catcus.pop();"
+	"catcus.push([catcus.pop(), catcus3, catcus2, catcus1]);" ;
+
+JS: push
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus2.push(catcus1);"
+	"catcus.push(catcus2);" ;
+
+JS: map
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus.push(catcus2.map(function(v) {"
+	"catcus.push(v);"
+	"catcus1();"
+	"return catcus.pop();"
+	"}));" ;
+
+JS: concat
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus.push(catcus2.concat(catcus1));" ;
+
+JS: length
+	"catcus.push(catcus.pop().length);" ;
+
+JS: get
+	"var catcus1 = catcus.pop();"
+	"catcus.push(catcus1[catcus.pop()]);" ;
+
+JS: set
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus1[catcus2] = catcus.pop();" ;
+
 // Call a function with a value on the stack,
 // restoring the value when the function returns.
 FUNC: keep

@@ -2,7 +2,7 @@
    _________  ______________  _______
   / ____/   |/_  __/ ____/ / / / ___/  /\___/\
  / /   / /| | / / / /   / / / /\__ \   ) -.- (  $%#@&!
-/ /___/ ___ |/ / / /___/ /_/ /___/ /  =\  o  /=   v0.0.4
+/ /___/ ___ |/ / / /___/ /_/ /___/ /  =\  o  /=   v0.0.5
 \____/_/  |_/_/  \____/\____//____/     )   (
   A concatenative language that compiles to JavaScript
 ```
@@ -28,6 +28,7 @@ catcus> 10 dup * .
 * Single and multi line js comments.
 * All js builtins: true, false, null, undefined, NaN, etc.
 * UTF8 identifiers with the same rules as js.
+* Simple array support.
 * { dup * } to define, potentially nested, anonymous functions.
 * Define functions: FUNC: duup dup dup ;
 * Define inline javascript functions:
@@ -43,8 +44,8 @@ where JS: is a parsing word that swallows strings of js code until a ';'.
 
 ## TODO
 
-* `CONSTANT: name value` defines a named value.
 * Array literals: `[ space separated [ possibly nested ] values ]`
+* `CONSTANT: name value` defines a named value.
 * Objects definitions.
 * Regex literals `/catcus[!?]+/`
 * JS interop
