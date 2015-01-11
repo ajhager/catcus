@@ -2,7 +2,7 @@
    _________  ______________  _______
   / ____/   |/_  __/ ____/ / / / ___/  /\___/\
  / /   / /| | / / / /   / / / /\__ \   ) -.- (  $%#@&!
-/ /___/ ___ |/ / / /___/ /_/ /___/ /  =\  o  /=   v0.0.6
+/ /___/ ___ |/ / / /___/ /_/ /___/ /  =\  o  /=   v0.0.7
 \____/_/  |_/_/  \____/\____//____/     )   (
   A concatenative language that compiles to JavaScript
 ```
@@ -39,7 +39,6 @@ catcus> 10 dup * .
 
 ### Features
 
-* `CONSTANT: name value` defines a named value.
 * Batch compile mode with support for commonjs and browser.
 * Modules
 * Protocols

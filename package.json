@@ -12,7 +12,7 @@
     "compiler"
   ],
   "author": "Joseph Hager <ajhager@gmail.com> (http://ajhager.com/)",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "src/main.js",
   "bin": {
     "catcus": "./catcus"
