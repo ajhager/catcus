@@ -262,6 +262,118 @@ module.exports = {
 		"catcus1();",
 	],
 
+	'call1': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"catcus1(catcus2);",
+	],
+
+	'call2': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"var catcus3 = catcus.pop();",
+		"catcus1(catcus3, catcus2);",
+	],
+
+	'call3': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"var catcus3 = catcus.pop();",
+		"var catcus4 = catcus.pop();",
+		"catcus1(catcus4, catcus3, catcus2);",
+	],
+
+	'call4': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"var catcus3 = catcus.pop();",
+		"var catcus4 = catcus.pop();",
+		"var catcus5 = catcus.pop();",
+		"catcus1(catcus5, catcus4, catcus3, catcus2);",
+	],
+
+	'calln': [
+		"var catcus1 = catcus.pop();",	
+		"var catcus2 = catcus.pop();",	
+		"var catcus3 = [];",
+		"for (var i = 0; i < catcus1; i++) {",
+		"var catcus4 = catcus.pop();",
+		"catcus3.push(catcus4);",
+		"}",
+		"catcus2.apply(catcus2, catcus3);",
+	],
+
+	'new': [
+		"var catcus1 = catcus.pop();",
+		"catcus.push(new catcus1());",
+	],
+
+	'new1': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"catcus.push(new catcus1(catcus2));",
+	],
+
+	'new2': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"var catcus3 = catcus.pop();",
+		"catcus.push(new catcus1(catcus3, catcus2));",
+	],
+
+	'new3': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"var catcus3 = catcus.pop();",
+		"var catcus4 = catcus.pop();",
+		"catcus.push(new catcus1(catcus4, catcus3, catcus2));",
+	],
+
+	'new4': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"var catcus3 = catcus.pop();",
+		"var catcus4 = catcus.pop();",
+		"var catcus5 = catcus.pop();",
+		"catcus.push(new catcus1(catcus5, catcus4, catcus3, catcus2));",
+	],
+
+	'newn': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"var catcus3 = [];",
+		"for (var i = 0; i < catcus1; i++) {",
+		"var catcus4 = catcus.pop();",
+		"catcus3.push(catcus4);",
+		"}",
+		"var catcus5 = function() {",
+		"return catcus2.apply(this, catcus3);",
+		"};",
+		"catcus5.prototype = catcus2.prototype;",
+		"catcus.push(new catcus5());",
+	],
+
+	'boa': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus1.length;",
+		"var catcus3 = [];",
+		"for (var i = 0; i < catcus2; i++) {",
+		"var catcus4 = catcus.pop();",
+		"catcus3.push(catcus4);",
+		"}",
+		"var catcus5 = function() {",
+		"return catcus1.apply(this, catcus3);",
+		"};",
+		"catcus5.prototype = catcus1.prototype;",
+		"catcus.push(new catcus5());",
+	],
+
+	'instanceof': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"catcus.push(catcus2 instanceof catcus1);",
+	],
+
 	'dip': [
 		"var catcus1 = catcus.pop();",
 		"var catcus2 = catcus.pop();",

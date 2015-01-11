@@ -17,11 +17,10 @@ module.exports = function() {
 	var repl = readline.createInterface(process.openStdin(), process.stdout);
 	repl.setPrompt(colors.magenta('catcus> '), 8)
 
-	var context = {};
 	var env = sandbox();
 	repl.on('line', function(line) {
 		tokens = lex(line);
-		code = parse(tokens, context);
+		code = parse(tokens);
 		vm.runInNewContext(code, env, 'eval');
 		console.log(colors.white.bold(formatStack(env.catcus)));
 		repl.prompt();

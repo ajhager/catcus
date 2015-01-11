@@ -7,7 +7,6 @@ var kernel = require('./kernel');
 
 var Parser = function(tokens, context) {
 	this.tokens = tokens;
-	this.context = context || {};
 	this.pos = 0;
 	this.code = [];
 };
@@ -45,19 +44,11 @@ Parser.prototype.emit = function(value) {
 };
 
 Parser.prototype.lookup = function(value) {
-	return kernel[value] ? kernel[value] : this.context[value];
+	return kernel[value];
 };
 
-Parser.prototype.define = function(name, value) {
-	var oldValue = this.context[name];
-	if (oldValue) {
-		console.error("overwriting def: " + name);
-	}
-	this.context[name] = value;
-};
-
-exports.parse = function(tokens, context) {
-	var parser = new Parser(tokens, context);
+exports.parse = function(tokens) {
+	var parser = new Parser(tokens);
 	parser.run();
 	return parser.code.join("\n");
 };
@@ -98,12 +89,15 @@ var parseRoot = function(parser) {
 					return parseObj;
 				}
 
+				if (t.value == '\\') {
+					return parseQuote;
+				}
+
 				var func = parser.lookup(t.value);
 				if (func) {
 					parser.emit(func);
 				} else {
-					console.error("Unknown identifier: " + t.value);
-					return null;
+					parser.emit([t.value + "();"]);
 				}
 
 				break;
@@ -145,9 +139,6 @@ var parseFunc = function(parser) {
 					lines.unshift("function " + name + "() {");
 					lines.push("}");
 					parser.emit(lines);
-
-					parser.define(name, [name+"();"]);
-
 					return parseRoot;
 				}
 
@@ -155,8 +146,7 @@ var parseFunc = function(parser) {
 				if (func) {
 					lines = lines.concat(func);
 				} else {
-					console.error("unknown identifier: " + t.value);
-					return null;
+					parser.emit([t.value + "();"]);
 				}
 				break;
 			default:
@@ -186,7 +176,7 @@ var parseObj = function(parser) {
 				var field = fields[i];
 
 				args = args + field;
-				if (i < fields.length-1) {
+				if (i < fields.length - 1) {
 					args = args + ', ';
 				}
 				lines.push("this." + field + " = " + field + ";");
@@ -196,22 +186,28 @@ var parseObj = function(parser) {
 
 			parser.emit(lines);
 
-			// Constructor
-			parser.define("$"+name, [
-				"var catcus1 = catcus.pop();",
-				"var catcus2 = catcus.pop();",
-				"catcus.push(new " + name + "(catcus2, catcus1));"
-			]);
-
-			// Instanceof
-			parser.define("is"+name, [
-				"var catcus1 = catcus.pop();",
-				"catcus.push(catcus1 instanceof " + name + ");",
-			]);
-
 			return parseRoot;
 		}
 
 		fields.push(field);
 	}
+};
+
+var parseQuote = function(parser) {
+	var name = parser.expect(token.Identifier);
+	if (!name) {
+		return console.error("quoted name must be a valid identifier");
+	}
+
+	var func = parser.lookup(name);
+	if (func) {
+		var lines = ["catcus.push(function "+name+"() {"];
+		lines = lines.concat(func);
+		lines.push("});");
+		parser.emit(lines);
+	} else {
+		parser.emit(["catcus.push("+name+");"]);
+	}
+
+	return parseRoot;
 };
