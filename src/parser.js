@@ -39,10 +39,6 @@ Parser.prototype.accept = function(tokenType) {
 };
 
 Parser.prototype.emit = function(value) {
-	this.code.push(value);
-};
-
-Parser.prototype.emitAll = function(value) {
 	for (var i = 0; i < value.length; i++) {
 		this.code.push(value[i]);
 	}
@@ -76,7 +72,7 @@ var parseRoot = function(parser) {
 				console.error(t.value);
 				return null;
 			case token.Comment:
-				parser.emit(t.value);
+				parser.emit([t.value]);
 				break;
 			case token.Number:
 			case token.String:
@@ -84,13 +80,13 @@ var parseRoot = function(parser) {
 			case token.Null:
 			case token.Undefined:
 			case token.NaN:
-				parser.emit("catcus.push(" + t.value + ");");
+				parser.emit(["catcus.push(" + t.value + ");"]);
 				break;
 			case token.Function:
 				if (t.value == '{') {
-					parser.emit("catcus.push(function() {");
+					parser.emit(["catcus.push(function() {"]);
 				} else {
-					parser.emit("});");
+					parser.emit(["});"]);
 				}
 				break;
 			case token.Identifier:
@@ -104,7 +100,7 @@ var parseRoot = function(parser) {
 
 				var func = parser.lookup(t.value);
 				if (func) {
-					parser.emitAll(func);
+					parser.emit(func);
 				} else {
 					console.error("Unknown identifier: " + t.value);
 					return null;
@@ -148,7 +144,7 @@ var parseFunc = function(parser) {
 				if (t.value == ';') {
 					lines.unshift("function " + name + "() {");
 					lines.push("}");
-					parser.emitAll(lines);
+					parser.emit(lines);
 
 					parser.define(name, [name+"();"]);
 
@@ -198,7 +194,7 @@ var parseObj = function(parser) {
 			lines.unshift(args + ") {");
 			lines.push("}");
 
-			parser.emitAll(lines);
+			parser.emit(lines);
 
 			// Constructor
 			parser.define("$"+name, [
