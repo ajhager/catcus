@@ -1,30 +1,5 @@
 var token = require('./token');
-
-var operators = {
-	'+': 'add',
-	'-': 'sub',
-	'*': 'mul',
-	'/': 'div',
-	'%': 'mod',
-	'.': 'print',
-	'&': 'AND',
-	'~': 'NOT',
-	'!': 'not',
-	'^': 'XOR',
-	'<': 'lt',
-	'>': 'gt',
-	'|': 'OR',
-	'++': 'inc',
-	'--': 'dec',
-	'||': 'or',
-	'&&': 'and',
-	'<<': 'LSHIFT',
-	'>>': 'RSHIFT',
-	'<=': 'lte',
-	'>=': 'gte',
-	'==': 'eq',
-	'!=': 'neq',
-};
+var kernel = require('./kernel');
 
 var Parser = function(tokens, context) {
 	this.tokens = tokens;
@@ -70,13 +45,13 @@ Parser.prototype.emitAll = function(value) {
 };
 
 Parser.prototype.lookup = function(value) {
-	return this.context[value];
+	return kernel[value] ? kernel[value] : this.context[value];
 };
 
 Parser.prototype.define = function(name, value) {
 	var oldValue = this.context[name];
 	if (oldValue) {
-		console.error("Overwriting def: " + name);
+		console.error("overwriting def: " + name);
 	}
 	this.context[name] = value;
 };
@@ -97,7 +72,7 @@ var parseRoot = function(parser) {
 				console.error(t.value);
 				return null;
 			case token.Comment:
-				// parser.emit(t.value);
+				parser.emit(t.value);
 				break;
 			case token.Number:
 			case token.String:
@@ -107,12 +82,6 @@ var parseRoot = function(parser) {
 			case token.NaN:
 				parser.emit("catcus.push(" + t.value + ");");
 				break;
-			case token.Parser:
-				var parserWord = parsers[t.value];
-				if (parserWord) {
-					return parserWord;
-				}
-				break;
 			case token.Function:
 				if (t.value == '{') {
 					parser.emit("catcus.push(function() {");
@@ -120,11 +89,11 @@ var parseRoot = function(parser) {
 					parser.emit("});");
 				}
 				break;
-			case token.Operator:
-				t.type = token.Identifier;
-				t.value = operators[t.value];
-				// fallthrough
 			case token.Identifier:
+				if (t.value == ':') {
+					return parseFunc;
+				}
+
 				var func = parser.lookup(t.value);
 				if (func) {
 					parser.emitAll(func);
@@ -132,6 +101,7 @@ var parseRoot = function(parser) {
 					console.error("Unknown identifier: " + t.value);
 					return null;
 				}
+
 				break;
 			default:
 				console.error("Unknown token: " + t.type + " " + t.value);
@@ -140,31 +110,10 @@ var parseRoot = function(parser) {
 	}
 };
 
-var parseJS = function(parser) {
-	var name = parser.expect(token.Identifier);
-	if (!name) {
-		return console.error("JS: name must be a valid identifier");
-	}
-
-	var lines = [];
-	var line;
-	while (line = parser.accept(token.String)) {
-		lines.push(line.slice(1, line.length - 1));
-	}
-
-	var end = parser.expect(token.Operator);
-	if (end != ';') {
-		return console.error("JS: should be closed with ';'");
-	}
-
-	parser.define(name, lines);
-	return parseRoot;
-};
-
 var parseFunc = function(parser) {
 	var name = parser.expect(token.Identifier);
 	if (!name) {
-		return console.error("FUNC: name must be a valid identifier");
+		return console.error("function def name must be a valid identifier");
 	}
 
 	var lines = [];
@@ -187,31 +136,23 @@ var parseFunc = function(parser) {
 					lines.push("});");
 				}
 				break;
-			case token.Operator:
+			case token.Identifier:
 				if (t.value == ';') {
 					parser.define(name, lines);
 					return parseRoot;
 				}
-				t.type = token.Identifier;
-				t.value = operators[t.value];
-				// fallthrough
-			case token.Identifier:
+
 				var func = parser.lookup(t.value);
 				if (func) {
 					lines = lines.concat(func);
 				} else {
-					console.error("Unknown identifier: " + t.value);
+					console.error("unknown identifier: " + t.value);
 					return null;
 				}
 				break;
 			default:
-				console.error("Unexpected token in FUNC: " + t.type + " " + t.value);
+				console.error("unexpected token in func def " + t.type + " " + t.value);
 				return null;
 		}
 	}
-};
-
-var parsers = {
-	"JS:": parseJS,
-	"FUNC:": parseFunc,
 };

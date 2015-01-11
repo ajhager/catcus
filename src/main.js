@@ -1,5 +1,3 @@
-var fs = require('fs');
-var path = require('path');
 var vm = require('vm');
 var util = require('util');
 
@@ -8,6 +6,25 @@ var readline = require('readline');
 
 var lex = require('./lexer').lex;
 var parse = require('./parser').parse;
+
+module.exports = function() {
+	console.log(banner);
+
+	var repl = readline.createInterface(process.openStdin(), process.stdout);
+	repl.setPrompt(colors.magenta('catcus> '), 8)
+
+	var context = {};
+	var env = sandbox();
+	repl.on('line', function(line) {
+		tokens = lex(line);
+		code = parse(tokens, context);
+		vm.runInNewContext(code, env, 'eval');
+		console.log(colors.white.bold(formatStack(env.catcus)));
+		repl.prompt();
+	});
+
+	repl.prompt();
+};
 
 var oldLog = console['log'].bind(console);
 console['log'] = function() {
@@ -36,36 +53,14 @@ var formatStack = function(stack) {
 	return output.join(' ');
 };
 
-module.exports = function() {
-	console.log(banner);
-
-	var repl = readline.createInterface(process.openStdin(), process.stdout);
-	repl.setPrompt(colors.magenta('catcus> '), 8)
-	var context = {};
-
-	var kernel = path.dirname(__dirname) + '/lib/kernel.cus';
-	var file = fs.readFileSync(kernel, 'utf8');
-	var tokens = lex(file);
-	var code = parse(tokens, context);
-
-	var env = {
+var sandbox = function() {
+	var sandbox = {
 		catcus: [],
-		require: require,
-		exports: exports,
 	};
-
 	var name;
 	for (name in global) {
-		env[name] = global[name];
+		sandbox[name] = global[name];
 	}
 
-	repl.on('line', function(line) {
-		tokens = lex(line);
-		code = parse(tokens, context);
-		vm.runInNewContext(code, env, 'eval');
-		console.log(colors.white.bold(formatStack(env.catcus)));
-		repl.prompt();
-	});
-
-	repl.prompt();
+	return sandbox;
 };

@@ -5,7 +5,7 @@ var EOF = -1;
 var isWhitespace = function(c) {
 	return '\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF;
 }
-var operators = [';', '+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^', '='];
+var operators = [':', ';', '+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^', '='];
 
 var Lexer = function(input) {
 	this.input = input;
@@ -126,7 +126,7 @@ var lexOperator = function(lexer) {
 		if (op1 == '=') {
 			return lexer.error('no operator named: ' + lexer.span());
 		}
-		lexer.emit(token.Operator);
+		lexer.emit(token.Identifier);
 		return lexRoot;
 	}
 
@@ -164,7 +164,8 @@ var lexOperator = function(lexer) {
 		case op1 == '>' && op2 == '=':
 		case op1 == '=' && op2 == '=':
 		case op1 == '!' && op2 == '=':
-			lexer.emit(token.Operator);
+		case op1 == ':' && op2 == ':':
+			lexer.emit(token.Identifier);
 			return lexRoot;
 		default:
 			return lexer.error('no operator named: ' + lexer.span());
@@ -245,15 +246,6 @@ var lexString = function(lexer) {
 var lexIdentifier = function(lexer) {
 	while (true) {
 		var c = lexer.next();
-
-		if (c == ':') {
-			if (isWhitespace(lexer.peek())) {
-				lexer.emit(token.Parser);
-				return lexRoot;
-			} else {
-				return lexer.error("colon allowed at the end of a parsing word: '" + lexer.span() + "'");
-			}
-		}
 
 		if (!unicode.ECMA.part.test(c) || c == EOF) {
 			if (isWhitespace(c)) {

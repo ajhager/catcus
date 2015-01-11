@@ -29,23 +29,14 @@ catcus> 10 dup * .
 * All js builtins: true, false, null, undefined, NaN, etc.
 * UTF8 identifiers with the same rules as js.
 * Simple array support.
-* { dup * } to define, potentially nested, anonymous functions.
-* Define functions: FUNC: duup dup dup ;
-* Define inline javascript functions:
-
-```
-JS: helloWorld
-	"catcus.push('Hello, ');"
-	"catcus.push('World!!');"
-	"console.log(catcus.pop() + catcus.pop());" ;
-```
-
-where JS: is a parsing word that swallows strings of js code until a ';'.
+* `{ dup * }` to define, potentially nested, anonymous functions.
+* `: duuup dup dup ;` to define a function named duuup.
 
 ## TODO
 
-* Array literals: `[ space separated [ possibly nested ] values ]`
+* Object definitions
+* Protocols
 * `CONSTANT: name value` defines a named value.
-* Objects definitions.
-* Regex literals `/catcus[!?]+/`
 * JS interop
+* Array literals: `[ space separated [ possibly nested ] values ]`
+* Regex literals `/catcus[!?]+/`
