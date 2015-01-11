@@ -143,7 +143,7 @@ var parseRoot = function(parser) {
 var parseJS = function(parser) {
 	var name = parser.expect(token.Identifier);
 	if (!name) {
-		return console.error("Def name must be a valid identifier");
+		return console.error("JS: name must be a valid identifier");
 	}
 
 	var lines = [];
@@ -161,6 +161,57 @@ var parseJS = function(parser) {
 	return parseRoot;
 };
 
+var parseFunc = function(parser) {
+	var name = parser.expect(token.Identifier);
+	if (!name) {
+		return console.error("FUNC: name must be a valid identifier");
+	}
+
+	var lines = [];
+	while (true) {
+		var t = parser.next();
+
+		switch (t.type) {
+			case token.Number:
+			case token.String:
+			case token.Boolean:
+			case token.Null:
+			case token.Undefined:
+			case token.NaN:
+				lines.push("catcus.push(" + t.value + ");");
+				break;
+			case token.Function:
+				if (t.value == '{') {
+					lines.push("catcus.push(function() {");
+				} else {
+					lines.push("});");
+				}
+				break;
+			case token.Operator:
+				if (t.value == ';') {
+					parser.define(name, lines);
+					return parseRoot;
+				}
+				t.type = token.Identifier;
+				t.value = operators[t.value];
+				// fallthrough
+			case token.Identifier:
+				var func = parser.lookup(t.value);
+				if (func) {
+					lines = lines.concat(func);
+				} else {
+					console.error("Unknown identifier: " + t.value);
+					return null;
+				}
+				break;
+			default:
+				console.error("Unexpected token in FUNC: " + t.type + " " + t.value);
+				return null;
+		}
+	}
+};
+
 var parsers = {
 	"JS:": parseJS,
+	"FUNC:": parseFunc,
 };

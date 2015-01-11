@@ -29,7 +29,8 @@ catcus> 10 dup * .
 * All js builtins: true, false, null, undefined, NaN, etc.
 * UTF8 identifiers with the same rules as js.
 * { dup * } to define, potentially nested, anonymous functions.
-* Define inline javascript functions with:
+* Define functions: FUNC: duup dup dup ;
+* Define inline javascript functions:
 
 ```
 JS: helloWorld
@@ -42,9 +43,7 @@ where JS: is a parsing word that swallows strings of js code until a ';'.
 
 ## TODO
 
-* `DEF: name value` defines a named value.
-* `DEF: duuup { dup dup dup }` would define a function.
-* `DEF: GL_COLOR_BUFFER_BIT 16384` would define a constant.
+* `CONSTANT: name value` defines a named value.
 * Array literals: `[ space separated [ possibly nested ] values ]`
 * Objects definitions.
 * Regex literals `/catcus[!?]+/`

@@ -1,92 +1,106 @@
-JS: clear "catcus = [];" ;
+JS: clear
+	"catcus = [];" ;
 
-JS: exit "process.exit();" ;
+JS: exit
+	"process.exit();" ;
 
-JS: add "catcus.push(catcus.pop() + catcus.pop());" ;
+JS: add
+	"catcus.push(catcus.pop() + catcus.pop());" ;
 
-JS: inc "catcus.push(catcus.pop() + 1);" ;
+JS: inc
+	"catcus.push(catcus.pop() + 1);" ;
 
 JS: sub
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() - catcus1);" ;
 
-JS: dec "catcus.push(catcus.pop() - 1);" ;
+JS: dec
+	"catcus.push(catcus.pop() - 1);" ;
 
-JS: mul "catcus.push(catcus.pop() * catcus.pop());" ;
+JS: mul
+	"catcus.push(catcus.pop() * catcus.pop());" ;
 
 JS: div
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() / catcus1);" ;
 
 JS: mod
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() % catcus1);" ;
 
-JS: print "console.log(catcus.pop());" ;
+JS: print
+	"console.log(catcus.pop());" ;
 
-JS: eq "catcus.push(catcus.pop() === catcus.pop());" ;
+JS: eq
+	"catcus.push(catcus.pop() === catcus.pop());" ;
 
-JS: neq "catcus.push(catcus.pop() !== catcus.pop());" ;
+JS: neq
+	"catcus.push(catcus.pop() !== catcus.pop());" ;
 
 JS: lt
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() < catcus1);" ;
 
 JS: lte
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() <= catcus1);" ;
 
 JS: gt
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() > catcus1);" ;
 
 JS: gte
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() >= catcus1);" ;
 
-JS: and "catcus.push(catcus.pop() && catcus.pop());" ;
+JS: and
+	"catcus.push(catcus.pop() && catcus.pop());" ;
 
-JS: or "catcus.push(catcus.pop() || catcus.pop());" ;
+JS: or
+	"catcus.push(catcus.pop() || catcus.pop());" ;
 
-JS: not "catcus.push(!catcus.pop());" ;
+JS: not
+	"catcus.push(!catcus.pop());" ;
 
 JS: AND
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() & catcus1);" ;
 
 JS: OR
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() | catcus1);" ;
 
-JS: NOT "catcus.push(~catcus.pop());" ;
+JS: NOT
+	"catcus.push(~catcus.pop());" ;
 
-JS: XOR "catcus.push(^catcus.pop());" ;
+JS: XOR
+	"catcus.push(^catcus.pop());" ;
 
 JS: LSHIFT
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() << catcus1);" ;
 
 JS: RSHIFT
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus.pop() >> catcus1);" ;
 
 JS: dup
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.push(catcus1);"
 	"catcus.push(catcus1);" ;
 
 JS: dup2
-	"catcus1 = catcus.pop();"
-	"catcus2 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
 	"catcus.push(catcus2);"
 	"catcus.push(catcus1);"
 	"catcus.push(catcus2);"
 	"catcus.push(catcus1);" ;
 
 JS: dup3
-	"catcus1 = catcus.pop();"
-	"catcus2 = catcus.pop();"
-	"catcus3 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"var catcus3 = catcus.pop();"
 	"catcus.push(catcus3);"
 	"catcus.push(catcus2);"
 	"catcus.push(catcus1);"
@@ -95,10 +109,10 @@ JS: dup3
 	"catcus.push(catcus1);" ;
 
 JS: dup4
-	"catcus1 = catcus.pop();"
-	"catcus2 = catcus.pop();"
-	"catcus3 = catcus.pop();"
-	"catcus4 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"var catcus3 = catcus.pop();"
+	"var catcus4 = catcus.pop();"
 	"catcus.push(catcus4);"
 	"catcus.push(catcus3);"
 	"catcus.push(catcus2);"
@@ -108,42 +122,46 @@ JS: dup4
 	"catcus.push(catcus2);"
 	"catcus.push(catcus1);" ;
 
-JS: drop "catcus.pop();" ;
+JS: drop
+	"catcus.pop();" ;
 
-JS: drop2 "catcus.pop();" "catcus.pop();" ;
+JS: drop2
+	"catcus.pop();" "catcus.pop();" ;
 
-JS: drop3 "catcus.pop();" "catcus.pop();" "catcus.pop();" ;
+JS: drop3
+	"catcus.pop();" "catcus.pop();" "catcus.pop();" ;
 
-JS: drop4 "catcus.pop();" "catcus.pop();" "catcus.pop();" "catcus.pop();" ;
+JS: drop4
+	"catcus.pop();" "catcus.pop();" "catcus.pop();" "catcus.pop();" ;
 
 JS: swap
-	"catcus1 = catcus.pop();"
-	"catcus2 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
 	"catcus.push(catcus1);"
 	"catcus.push(catcus2);" ;
 
 JS: nip
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.pop();"
 	"catcus.push(catcus1);" ;
 
 JS: nip2
-	"catcus1 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
 	"catcus.pop();"
 	"catcus.pop();"
 	"catcus.push(catcus1);" ;
 	
 JS: over
-	"catcus1 = catcus.pop();"
-	"catcus2 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
 	"catcus.push(catcus2);"
 	"catcus.push(catcus1);"
 	"catcus.push(catcus2);" ;
 
 JS: over2
-	"catcus1 = catcus.pop();"
-	"catcus2 = catcus.pop();"
-	"catcus3 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"var catcus3 = catcus.pop();"
 	"catcus.push(catcus3);"
 	"catcus.push(catcus2);"
 	"catcus.push(catcus1);"
@@ -151,20 +169,39 @@ JS: over2
 	"catcus.push(catcus2);" ;
 
 JS: pick
-	"catcus1 = catcus.pop();"
-	"catcus2 = catcus.pop();"
-	"catcus3 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"var catcus3 = catcus.pop();"
 	"catcus.push(catcus3);"
 	"catcus.push(catcus2);"
 	"catcus.push(catcus1);"
 	"catcus.push(catcus3);" ;
 
 JS: rot
-	"catcus1 = catcus.pop();"
-	"catcus2 = catcus.pop();"
-	"catcus3 = catcus.pop();"
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"var catcus3 = catcus.pop();"
 	"catcus.push(catcus2);"
 	"catcus.push(catcus1);"
 	"catcus.push(catcus3);" ;
 
-JS: call "catcus.pop()();" ;
+JS: call
+	"catcus.pop()();" ;
+
+JS: dip
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus1();"
+	"catcus.push(catcus2);" ;
+
+FUNC: keep
+	over { call } dip ;
+
+FUNC: _bi
+	{ keep } dip call ;
+
+FUNC: bi
+	{ dip } dip call ;
+
+FUNC: bi_
+	dup bi ;

@@ -48,7 +48,11 @@ module.exports = function() {
 	var tokens = lex(file);
 	var code = parse(tokens, context);
 
-	var env = { catcus: [], require: require, exports: exports };
+	var env = {
+		catcus: [],
+		require: require,
+		exports: exports,
+	};
 
 	var name;
 	for (name in global) {
