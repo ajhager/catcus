@@ -12,12 +12,16 @@
     "compiler"
   ],
   "author": "Joseph Hager <ajhager@gmail.com> (http://ajhager.com/)",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "src/main.js",
   "bin": {
     "catcus": "./catcus"
   },
   "homepage": "http://catcus.org",
+	"license": {
+		"type": "BSD3",
+		"url": "https://github.com/ajhager/catcus/raw/master/LICENSE"
+  },
   "dependencies": {
     "colors": "^1.0.3",
     "unicode-categories": "^0.9.1"

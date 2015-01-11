@@ -1,3 +1,7 @@
+// Copyright 2015 Joseph Hager. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 var vm = require('vm');
 var util = require('util');
 
@@ -38,7 +42,7 @@ console['error'] = function() {
 	oldError(colors.red(args.join(' ')));
 };
 
-var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.5\n") + "   )   (\n");
+var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.6\n") + "   )   (\n");
 
 var formatStack = function(stack) {
 	var output = ['=>'];
