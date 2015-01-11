@@ -213,6 +213,14 @@ JS: compose
 	"catcus1();"
 	"});" ;
 
+JS: prepose
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"catcus.push(function() {"
+	"catcus1();"
+	"catcus2();"
+	"});" ;
+
 JS: ifelse
 	"var catcus1 = catcus.pop();"
 	"var catcus2 = catcus.pop();"
@@ -224,6 +232,11 @@ JS: loop
 	"catcus1();"
 	"if (!catcus.pop()) break;"
 	"}" ;
+
+JS: times
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = catcus.pop();"
+	"for (var i = 0; i < catcus2; i++) { catcus1(); }" ;
 
 JS: array
 	"catcus.push([]);" ;
