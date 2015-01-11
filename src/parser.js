@@ -146,7 +146,12 @@ var parseFunc = function(parser) {
 				break;
 			case token.Identifier:
 				if (t.value == ';') {
-					parser.define(name, lines);
+					lines.unshift("function " + name + "() {");
+					lines.push("}");
+					parser.emitAll(lines);
+
+					parser.define(name, [name+"();"]);
+
 					return parseRoot;
 				}
 
@@ -172,9 +177,6 @@ var parseObj = function(parser) {
 	}
 
 	var fields = [];
-	var lines = [
-		"function " + name + "() {",
-	];
 	while (true) {
 		var field = parser.expect(token.Identifier);
 		if (!field) {
