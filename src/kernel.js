@@ -18,11 +18,11 @@ var genCall = function(n, constructor) {
 
 	var def = "catcus1(" + args + ")";
 	if (constructor) {
-		def = "catcus.push(new " + def + ");";
+		lines.push("catcus.push(new " + def + ");");
 	} else {
-		def = def + ";";
+		lines.push("var catcus1 = " + def + ";");
+		lines.push("if (typeof catcus1 !== 'undefined') { catcus.push(catcus1); }");
 	}
-	lines.push(def);
 
 	return lines;
 };

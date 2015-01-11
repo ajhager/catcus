@@ -97,7 +97,10 @@ var parseRoot = function(parser) {
 				if (func) {
 					parser.emit(func);
 				} else {
-					parser.emit([t.value + "();"]);
+					parser.emit([
+						"var catcus1 = " + t.value + "();",
+						"if (typeof catcus1 !== 'undefined') { catcus.push(catcus1); }",
+					]);
 				}
 
 				break;
@@ -146,7 +149,10 @@ var parseFunc = function(parser) {
 				if (func) {
 					lines = lines.concat(func);
 				} else {
-					parser.emit([t.value + "();"]);
+					parser.emit([
+						"var catcus1 = " + t.value + "();",
+						"if (typeof catcus1 !== 'undefined') { catcus.push(catcus1); }",
+					]);
 				}
 				break;
 			default:

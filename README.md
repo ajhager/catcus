@@ -29,6 +29,7 @@ catcus> 10 dup * .
 * All js builtins: true, false, null, undefined, NaN, etc.
 * UTF8 identifiers with the same rules as js.
 * Simple array support.
+* JS interop: `Date` returns the current date as a string, etc.
 * `{ dup * }` to define an anonymous function.
 * `: duuup dup dup ;` to define a function named duuup.
 * `:: Point x y ;` to define a constructor function with those fields.
@@ -39,7 +40,7 @@ catcus> 10 dup * .
 ### Features
 
 * `CONSTANT: name value` defines a named value.
-* JS Return values.
+* Batch compile mode with support for commonjs and browser.
 * Modules
 * Protocols
 * Transducers
