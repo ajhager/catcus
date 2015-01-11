@@ -34,9 +34,16 @@ catcus> 10 dup * .
 
 ## TODO
 
+### Features
+
+* Integrate js-csp.
 * Object definitions
-* Protocols
+* Module system.
 * `CONSTANT: name value` defines a named value.
 * JS interop
-* Array literals: `[ space separated [ possibly nested ] values ]`
-* Regex literals `/catcus[!?]+/`
+* Protocols (and transducers).
+
+### Optimizations
+
+* Reduce stack usage where possible.
+* Use Google Closure Compiler (for optimization and ES6 support).
