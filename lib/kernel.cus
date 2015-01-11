@@ -259,6 +259,12 @@ JS: array4
 	"var catcus3 = catcus.pop();"
 	"catcus.push([catcus.pop(), catcus3, catcus2, catcus1]);" ;
 
+JS: arrayn
+	"var catcus1 = catcus.pop();"
+	"var catcus2 = [];"
+	"for (var i = 0; i < catcus1; i++) { catcus2.unshift(catcus.pop()); }"
+	"catcus.push(catcus2);" ;
+
 JS: push
 	"var catcus1 = catcus.pop();"
 	"var catcus2 = catcus.pop();"
