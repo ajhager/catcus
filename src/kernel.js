@@ -2,6 +2,31 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+var genCall = function(n, constructor) {
+	var lines = ["var catcus1 = catcus.pop();"];
+
+	var args = "";
+	for (var i = 0; i < n; i++) {
+		var arg = "catcus" + (i+2);
+		args = args + arg;
+		if (i < n - 1) {
+			args = args + ', ';
+		}
+
+		lines.push("var " + arg + " = catcus.pop();");
+	}
+
+	var def = "catcus1(" + args + ")";
+	if (constructor) {
+		def = "catcus.push(new " + def + ");";
+	} else {
+		def = def + ";";
+	}
+	lines.push(def);
+
+	return lines;
+};
+
 module.exports = {
 	'.': [
 		"var catcus1 = catcus.pop();",
@@ -257,103 +282,43 @@ module.exports = {
 		"catcus.push(catcus3);",
 	],
 
-	'call': [
-		"var catcus1 = catcus.pop();",
-		"catcus1();",
-	],
-
-	'call1': [
-		"var catcus1 = catcus.pop();",
-		"var catcus2 = catcus.pop();",
-		"catcus1(catcus2);",
-	],
-
-	'call2': [
-		"var catcus1 = catcus.pop();",
-		"var catcus2 = catcus.pop();",
-		"var catcus3 = catcus.pop();",
-		"catcus1(catcus3, catcus2);",
-	],
-
-	'call3': [
-		"var catcus1 = catcus.pop();",
-		"var catcus2 = catcus.pop();",
-		"var catcus3 = catcus.pop();",
-		"var catcus4 = catcus.pop();",
-		"catcus1(catcus4, catcus3, catcus2);",
-	],
-
-	'call4': [
-		"var catcus1 = catcus.pop();",
-		"var catcus2 = catcus.pop();",
-		"var catcus3 = catcus.pop();",
-		"var catcus4 = catcus.pop();",
-		"var catcus5 = catcus.pop();",
-		"catcus1(catcus5, catcus4, catcus3, catcus2);",
-	],
-
+	'call': genCall(0),
+	'call1': genCall(1),
+	'call2': genCall(2),
+	'call3': genCall(3),
+	'call4': genCall(4),
+	'call5': genCall(5),
+	'call6': genCall(6),
+	'call7': genCall(7),
+	'call8': genCall(8),
+	'call9': genCall(9),
 	'calln': [
 		"var catcus1 = catcus.pop();",	
-		"var catcus2 = catcus.pop();",	
+		"var catcus2 = catcus1.length;",	
 		"var catcus3 = [];",
-		"for (var i = 0; i < catcus1; i++) {",
+		"for (var i = 0; i < catcus2; i++) {",
 		"var catcus4 = catcus.pop();",
 		"catcus3.push(catcus4);",
 		"}",
-		"catcus2.apply(catcus2, catcus3);",
+		"catcus1.apply(null, catcus3);",
 	],
-
-	'new': [
-		"var catcus1 = catcus.pop();",
-		"catcus.push(new catcus1());",
-	],
-
-	'new1': [
+	'calla': [
 		"var catcus1 = catcus.pop();",
 		"var catcus2 = catcus.pop();",
-		"catcus.push(new catcus1(catcus2));",
+		"catcus1.apply(null, catcus2);",
 	],
 
-	'new2': [
-		"var catcus1 = catcus.pop();",
-		"var catcus2 = catcus.pop();",
-		"var catcus3 = catcus.pop();",
-		"catcus.push(new catcus1(catcus3, catcus2));",
-	],
-
-	'new3': [
-		"var catcus1 = catcus.pop();",
-		"var catcus2 = catcus.pop();",
-		"var catcus3 = catcus.pop();",
-		"var catcus4 = catcus.pop();",
-		"catcus.push(new catcus1(catcus4, catcus3, catcus2));",
-	],
-
-	'new4': [
-		"var catcus1 = catcus.pop();",
-		"var catcus2 = catcus.pop();",
-		"var catcus3 = catcus.pop();",
-		"var catcus4 = catcus.pop();",
-		"var catcus5 = catcus.pop();",
-		"catcus.push(new catcus1(catcus5, catcus4, catcus3, catcus2));",
-	],
-
+	'new': genCall(0, true),
+	'new1': genCall(1, true),
+	'new2': genCall(2, true),
+	'new3': genCall(3, true),
+	'new4': genCall(4, true),
+	'new5': genCall(5, true),
+	'new6': genCall(6, true),
+	'new7': genCall(7, true),
+	'new8': genCall(8, true),
+	'new9': genCall(9, true),
 	'newn': [
-		"var catcus1 = catcus.pop();",
-		"var catcus2 = catcus.pop();",
-		"var catcus3 = [];",
-		"for (var i = 0; i < catcus1; i++) {",
-		"var catcus4 = catcus.pop();",
-		"catcus3.push(catcus4);",
-		"}",
-		"var catcus5 = function() {",
-		"return catcus2.apply(this, catcus3);",
-		"};",
-		"catcus5.prototype = catcus2.prototype;",
-		"catcus.push(new catcus5());",
-	],
-
-	'boa': [
 		"var catcus1 = catcus.pop();",
 		"var catcus2 = catcus1.length;",
 		"var catcus3 = [];",
@@ -366,6 +331,15 @@ module.exports = {
 		"};",
 		"catcus5.prototype = catcus1.prototype;",
 		"catcus.push(new catcus5());",
+	],
+	'newa': [
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus.pop();",
+		"var catcus3 = function() {",
+		"return catcus1.apply(this, catcus2);",
+		"};",
+		"catcus3.prototype = catcus1.prototype;",
+		"catcus.push(new catcus3());",
 	],
 
 	'instanceof': [

@@ -32,7 +32,7 @@ catcus> 10 dup * .
 * `{ dup * }` to define an anonymous function.
 * `: duuup dup dup ;` to define a function named duuup.
 * `:: Point x y ;` to define a constructor function with those fields.
-* `3 5 \ Point boa` to construct an object.
+* `3 5 \ Point new2` to construct an object.
 
 ## TODO
 
