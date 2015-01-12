@@ -3,13 +3,21 @@
 // license that can be found in the LICENSE file.
 
 var unicode = require('unicode-categories');
-var token = require('./token');
+
+var token = {
+	EOF: "TokenEOF",
+	Error: "TokenError",
+	Comment: "TokenComment",
+	Literal: "TokenLiteral",
+	Identifier: "TokenIdentifier",
+};
+exports.token = token;
 
 var EOF = -1;
 var isWhitespace = function(c) {
 	return '\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF;
 }
-var operators = ['\\', ':', ';', '+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^', '='];
+var operators = ['{', '}', '\\', ':', ';', '+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^', '='];
 
 var Lexer = function(input) {
 	this.input = input;
@@ -100,7 +108,7 @@ var lexRoot = function(lexer) {
 			case isWhitespace(c):
 				lexer.ignore();
 				break;
-				case operators.indexOf(c) > -1:
+			case operators.indexOf(c) > -1:
 				lexer.backup();
 				return lexOperator;
 			case '0' <= c && c <= '9':
@@ -108,9 +116,6 @@ var lexRoot = function(lexer) {
 				return lexNumber;
 			case c == '\"':
 				return lexString;
-			case c == '{' || c == '}':
-				lexer.emit(token.Function);
-				break;
 			case unicode.ECMA.start.test(c):
 				lexer.backup();
 				return lexIdentifier;
@@ -221,7 +226,7 @@ var lexNumber = function(lexer) {
 
 	var c = lexer.peek();
 	if (isWhitespace(c)) {
-		lexer.emit(token.Number);
+		lexer.emit(token.Literal);
 		return lexRoot;
 	}
 
@@ -241,7 +246,7 @@ var lexString = function(lexer) {
 			case '\n':
 				return lexer.error("unterminated quoted string");
 			case '\"':
-				lexer.emit(token.String);
+				lexer.emit(token.Literal);
 				return lexRoot;
 		}
 	}
@@ -258,16 +263,10 @@ var lexIdentifier = function(lexer) {
 				switch (lexer.span()) {
 					case 'true':
 					case 'false':
-						lexer.emit(token.Boolean);
-						break;
 					case 'null':
-						lexer.emit(token.Null);
-						break;
 					case 'undefined':
-						lexer.emit(token.Undefined);
-						break;
 					case 'NaN':
-						lexer.emit(token.NaN);
+						lexer.emit(token.Literal);
 						break;
 					default:
 						lexer.emit(token.Identifier);

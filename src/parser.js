@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-var token = require('./token');
+var token = require('./lexer').token;
 var kernel = require('./kernel');
 
 var Parser = function(tokens, context) {
@@ -12,7 +12,7 @@ var Parser = function(tokens, context) {
 };
 
 Parser.prototype.run = function() {
-	var state = parseRoot;
+	var state = parseBlock;
 	while (state) {
 		state = state(this);
 	}
@@ -27,14 +27,6 @@ Parser.prototype.expect = function(tokenType) {
 	if (t.type == tokenType) {
 		return t.value;
 	};
-};
-
-Parser.prototype.accept = function(tokenType) {
-	var t = this.next();
-	if (t.type == tokenType) {
-		return t.value;
-	}
-	this.pos--;
 };
 
 Parser.prototype.emit = function(value) {
@@ -53,7 +45,7 @@ exports.parse = function(tokens) {
 	return parser.code.join("\n");
 };
 
-var parseRoot = function(parser, open) {
+var parseBlock = function(parser) {
 	while (true) {
 		var t = parser.next();
 		switch (t.type) {
@@ -65,24 +57,28 @@ var parseRoot = function(parser, open) {
 			case token.Comment:
 				parser.emit([t.value]);
 				break;
-			case token.Number:
-			case token.String:
-			case token.Boolean:
-			case token.Null:
-			case token.Undefined:
-			case token.NaN:
+			case token.Literal:
 				parser.emit(["catcus.push(" + t.value + ");"]);
 				break;
-			case token.Function:
+			case token.Identifier:
 				if (t.value == '{') {
 					parser.emit(["catcus.push(function() {"]);
-				} else {
+					break;
+				} else if (t.value == '}') {
 					parser.emit(["});"]);
+					break;
 				}
-				break;
-			case token.Identifier:
+
 				if (t.value == ':') {
-					return parseFunc;
+					var name = parser.expect(token.Identifier);
+					if (!name) {
+						return console.error("function def name must be a valid identifier");
+					}
+					parser.emit(["function " + name + "() {"]);
+					break;
+				} else if (t.value == ';') {
+					parser.emit(["}"]);
+					break;
 				}
 
 				if (t.value == '::') {
@@ -90,21 +86,7 @@ var parseRoot = function(parser, open) {
 				}
 
 				if (t.value == '\\') {
-					var name = parser.expect(token.Identifier);
-					if (!name) {
-						return console.error("quoted name must be a valid identifier");
-					}
-
-					var func = parser.lookup(name);
-					if (func) {
-						var lines = ["catcus.push(function "+name+"() {"];
-						lines = lines.concat(func);
-						lines.push("});");
-						parser.emit(lines);
-					} else {
-						parser.emit(["catcus.push("+name+");"]);
-					}
-					break;
+					return parseQuote;
 				}
 
 				var func = parser.lookup(t.value);
@@ -120,74 +102,6 @@ var parseRoot = function(parser, open) {
 				break;
 			default:
 				console.error("Unknown token: " + t.type + " " + t.value);
-				return null;
-		}
-	}
-};
-
-var parseFunc = function(parser) {
-	var name = parser.expect(token.Identifier);
-	if (!name) {
-		return console.error("function def name must be a valid identifier");
-	}
-
-	var lines = [];
-	while (true) {
-		var t = parser.next();
-
-		switch (t.type) {
-			case token.Number:
-			case token.String:
-			case token.Boolean:
-			case token.Null:
-			case token.Undefined:
-			case token.NaN:
-				lines.push("catcus.push(" + t.value + ");");
-				break;
-			case token.Function:
-				if (t.value == '{') {
-					lines.push("catcus.push(function() {");
-				} else {
-					lines.push("});");
-				}
-				break;
-			case token.Identifier:
-				if (t.value == ';') {
-					lines.unshift("function " + name + "() {");
-					lines.push("}");
-					parser.emit(lines);
-					return parseRoot;
-				}
-
-				if (t.value == '\\') {
-					var next = parser.expect(token.Identifier);
-					if (!next) {
-						return console.error("quoted name must be a valid identifier");
-					}
-
-					var func = parser.lookup(name);
-					if (func) {
-						lines.push("catcus.push(function "+next+"() {");
-						lines = lines.concat(func);
-						lines.push("});");
-					} else {
-						lines.push("catcus.push("+next+");");
-					}
-					break;
-				}
-
-				var func = parser.lookup(t.value);
-				if (func) {
-					lines = lines.concat(func);
-				} else {
-					lines = lines.concat([
-						"var catcus1 = " + t.value + "();",
-						"if (typeof catcus1 !== 'undefined') { catcus.push(catcus1); }",
-					]);
-				}
-				break;
-			default:
-				console.error("unexpected token in func def " + t.type + " " + t.value);
 				return null;
 		}
 	}
@@ -223,9 +137,28 @@ var parseObj = function(parser) {
 
 			parser.emit(lines);
 
-			return parseRoot;
+			return parseBlock;
 		}
 
 		fields.push(field);
 	}
 };
+
+var parseQuote = function(parser) {
+	var name = parser.expect(token.Identifier);
+	if (!name) {
+		return console.error("quoted name must be a valid identifier");
+	}
+
+	var func = parser.lookup(name);
+	if (func) {
+		var lines = ["catcus.push(function " + name + "() {"];
+		lines = lines.concat(func);
+		lines.push("});");
+		parser.emit(lines);
+	} else {
+		parser.emit(["catcus.push(" + name + ");"]);
+	}
+
+	return parseBlock;
+}

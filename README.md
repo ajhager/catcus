@@ -40,11 +40,15 @@ catcus> 10 dup * .
 
 ### Features
 
-* Batch compile mode with support for commonjs and browser.
+* Batch compile mode with support for commonjs and browser
 * Modules
 * Protocols
+* Immutable data structures
 * Transducers
 * CSP
+* Standard library
+* Bower and / or npm based library management
+* Starter template generator
 
 ### Cleanup
 
