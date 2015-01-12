@@ -53,7 +53,7 @@ exports.parse = function(tokens) {
 	return parser.code.join("\n");
 };
 
-var parseRoot = function(parser) {
+var parseRoot = function(parser, open) {
 	while (true) {
 		var t = parser.next();
 		switch (t.type) {
@@ -90,7 +90,21 @@ var parseRoot = function(parser) {
 				}
 
 				if (t.value == '\\') {
-					return parseQuote;
+					var name = parser.expect(token.Identifier);
+					if (!name) {
+						return console.error("quoted name must be a valid identifier");
+					}
+
+					var func = parser.lookup(name);
+					if (func) {
+						var lines = ["catcus.push(function "+name+"() {"];
+						lines = lines.concat(func);
+						lines.push("});");
+						parser.emit(lines);
+					} else {
+						parser.emit(["catcus.push("+name+");"]);
+					}
+					break;
 				}
 
 				var func = parser.lookup(t.value);
@@ -145,6 +159,23 @@ var parseFunc = function(parser) {
 					return parseRoot;
 				}
 
+				if (t.value == '\\') {
+					var next = parser.expect(token.Identifier);
+					if (!next) {
+						return console.error("quoted name must be a valid identifier");
+					}
+
+					var func = parser.lookup(name);
+					if (func) {
+						lines.push("catcus.push(function "+next+"() {");
+						lines = lines.concat(func);
+						lines.push("});");
+					} else {
+						lines.push("catcus.push("+next+");");
+					}
+					break;
+				}
+
 				var func = parser.lookup(t.value);
 				if (func) {
 					lines = lines.concat(func);
@@ -197,23 +228,4 @@ var parseObj = function(parser) {
 
 		fields.push(field);
 	}
-};
-
-var parseQuote = function(parser) {
-	var name = parser.expect(token.Identifier);
-	if (!name) {
-		return console.error("quoted name must be a valid identifier");
-	}
-
-	var func = parser.lookup(name);
-	if (func) {
-		var lines = ["catcus.push(function "+name+"() {"];
-		lines = lines.concat(func);
-		lines.push("});");
-		parser.emit(lines);
-	} else {
-		parser.emit(["catcus.push("+name+");"]);
-	}
-
-	return parseRoot;
 };
