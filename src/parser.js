@@ -149,7 +149,7 @@ var parseFunc = function(parser) {
 				if (func) {
 					lines = lines.concat(func);
 				} else {
-					parser.emit([
+					lines = lines.concat([
 						"var catcus1 = " + t.value + "();",
 						"if (typeof catcus1 !== 'undefined') { catcus.push(catcus1); }",
 					]);

@@ -32,6 +32,7 @@ catcus> 10 dup * .
 * JS interop: `Date` returns the current date as a string, etc.
 * `{ dup * }` to define an anonymous function.
 * `: duuup dup dup ;` to define a function named duuup.
+* Recursion: `: fib dup 1 > { { 1 - fib } { 2 - fib } _bi + } when ;`
 * `:: Point x y ;` to define a constructor function with those fields.
 * `3 5 \ Point new2` to construct an object.
 
