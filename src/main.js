@@ -2,16 +2,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-var vm = require('vm');
-var util = require('util');
+import to5 from '6to5';
+import vm from 'vm';
+import util from 'util';
+import colors from 'colors/safe';
+import readline from 'readline';
+import lex from './lexer';
+import parse from './parser';
 
-var colors = require('colors/safe');
-var readline = require('readline');
-
-var lex = require('./lexer').lex;
-var parse = require('./parser').parse;
-
-module.exports = function() {
+export default function() {
 	console.log(banner);
 
 	var repl = readline.createInterface(process.openStdin(), process.stdout);
@@ -19,9 +18,9 @@ module.exports = function() {
 
 	var env = sandbox();
 	repl.on('line', function(line) {
-		tokens = lex(line);
-		code = parse(tokens);
-		vm.runInNewContext(code, env, 'eval');
+		var tokens = lex(line);
+		var output = to5.transform(parse(tokens));
+		vm.runInNewContext(output.code, env, 'eval');
 		console.log(colors.white.bold(formatStack(env.catcus)));
 		repl.prompt();
 	});
@@ -43,7 +42,7 @@ console['error'] = function() {
 
 var banner = colors.grey("  /\\___/\\\n  ) -.- (  " + colors.white.bold("$%#@&!\n") + " =\\  o  /=   " + colors.yellow("v0.0.7\n") + "   )   (\n");
 
-var formatStack = function(stack) {
+function formatStack(stack) {
 	var output = ['=>'];
 	var input = stack;
 	if (input.length > 10) {
@@ -54,9 +53,9 @@ var formatStack = function(stack) {
 		output.push(util.inspect(input[i]));
 	}
 	return output.join(' ');
-};
+}
 
-var sandbox = function() {
+var sandbox = function sandbox() {
 	var sandbox = {
 		catcus: [],
 	};
@@ -66,4 +65,4 @@ var sandbox = function() {
 	}
 
 	return sandbox;
-};
+}

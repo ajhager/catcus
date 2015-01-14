@@ -21,6 +21,7 @@ catcus> 10 dup * .
 
 ## Features
 
+* Written in and compiles to es6.
 * Numbers, strings, single and multi line comments, builtin values like null.
 * All js number formats except octal.
 * Double quote js strings.
@@ -57,4 +58,4 @@ catcus> 10 dup * .
 ### Optimizations
 
 * Reduce stack usage where possible.
-* Use Google Closure Compiler (for optimization and ES6 support).
+* Use Google Closure Compiler.

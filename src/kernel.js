@@ -7,7 +7,7 @@ var genCall = function(n, constructor) {
 
 	var args = "";
 	for (var i = 0; i < n; i++) {
-		var arg = "catcus" + (i+2);
+		var arg = "catcus" + (i + 2);
 		args = args + arg;
 		if (i < n - 1) {
 			args = args + ', ';
@@ -293,8 +293,8 @@ module.exports = {
 	'call8': genCall(8),
 	'call9': genCall(9),
 	'calln': [
-		"var catcus1 = catcus.pop();",	
-		"var catcus2 = catcus1.length;",	
+		"var catcus1 = catcus.pop();",
+		"var catcus2 = catcus1.length;",
 		"var catcus3 = [];",
 		"for (var i = 0; i < catcus2; i++) {",
 		"var catcus4 = catcus.pop();",

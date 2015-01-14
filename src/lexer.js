@@ -2,103 +2,105 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-var unicode = require('unicode-categories');
+import * as unicode from 'unicode-categories';
 
-var token = {
+export var token = {
 	EOF: "TokenEOF",
 	Error: "TokenError",
 	Comment: "TokenComment",
 	Literal: "TokenLiteral",
 	Identifier: "TokenIdentifier",
 };
-exports.token = token;
 
 var EOF = -1;
-var isWhitespace = function(c) {
+
+function isWhitespace(c) {
 	return '\t\n\v\f\r \u0085\u00A0'.indexOf(c) >= 0 || c == EOF;
 }
 var operators = ['{', '}', '\\', ':', ';', '+', '-', '*', '/', '%', '.', '<', '>', '!', '&', '|', '~', '^', '='];
 
-var Lexer = function(input) {
-	this.input = input;
-	this.start = 0;
-	this.pos = 0;
-	this.done = false;
-	this.tokens = [];
-};
-
-Lexer.prototype.run = function() {
-	var state = lexRoot;
-	while (state) {
-		state = state(this);
+class Lexer {
+	constructor(input) {
+		this.input = input;
+		this.start = 0;
+		this.pos = 0;
+		this.done = false;
+		this.tokens = [];
 	}
-};
 
-Lexer.prototype.emit = function(tokenType) {
-	this.tokens.push({
-		type: tokenType,
-		value: this.span(),
-		position: this.start,
-	});
-	this.start = this.pos;
-};
-
-Lexer.prototype.next = function() {
-	if (this.pos >= this.input.length) {
-		this.done = true;
-		return EOF;
+	run() {
+		var state = lexRoot;
+		while (state) {
+			state = state(this);
+		}
 	}
-	return this.input[this.pos++];
-};
 
-Lexer.prototype.ignore = function() {
-	this.start = this.pos;
-};
-
-Lexer.prototype.backup = function() {
-	if (!this.done) {
-		this.pos--;
+	emit(tokenType) {
+		this.tokens.push({
+			type: tokenType,
+			value: this.span(),
+			position: this.start,
+		});
+		this.start = this.pos;
 	}
-};
 
-Lexer.prototype.peek = function() {
-	var next = this.next();
-	this.backup();
-	return next;
-};
-
-Lexer.prototype.error = function(error) {
-	this.tokens.push({
-		type: token.Error,
-		value: error,
-		position: this.pos,
-	});
-};
-
-Lexer.prototype.accept = function(valid) {
-	if (valid.indexOf(this.next()) >= 0) {
-		return true;
+	next() {
+		if (this.pos >= this.input.length) {
+			this.done = true;
+			return EOF;
+		}
+		return this.input[this.pos++];
 	}
-	this.backup();
-	return false;
-};
 
-Lexer.prototype.acceptRun = function(valid) {
-	while (valid.indexOf(this.next()) >= 0) {}
-	this.backup();
-};
+	ignore() {
+		this.start = this.pos;
+	}
 
-Lexer.prototype.span = function() {
-	return this.input.slice(this.start, this.pos);
-};
+	backup() {
+		if (!this.done) {
+			this.pos--;
+		}
+	}
 
-exports.lex = function(input) {
+	peek() {
+		var next = this.next();
+		this.backup();
+		return next;
+	}
+
+	error(error) {
+		this.tokens.push({
+			type: token.Error,
+			value: error,
+			position: this.pos,
+		});
+	}
+
+	accept(valid) {
+		if (valid.indexOf(this.next()) >= 0) {
+			return true;
+		}
+		this.backup();
+		return false;
+	}
+
+	acceptRun(valid) {
+		while (valid.indexOf(this.next()) >= 0) {}
+		this.backup();
+	}
+
+	span() {
+		return this.input.slice(this.start, this.pos);
+	}
+}
+
+export default function lex(input) {
 	var lexer = new Lexer(input);
 	lexer.run();
 	return lexer.tokens;
 };
 
-var lexRoot = function(lexer) {
+function lexRoot(lexer) {
 	while (true) {
 		var c = lexer.next();
 		switch (true) {
@@ -123,9 +125,9 @@ var lexRoot = function(lexer) {
 				return lexer.error("bad character: '" + c + "'");
 		}
 	}
-};
+}
 
-var lexOperator = function(lexer) {
+function lexOperator(lexer) {
 	var op1 = lexer.next();
 	var op2 = lexer.next();
 
@@ -179,9 +181,9 @@ var lexOperator = function(lexer) {
 		default:
 			return lexer.error('no operator named: ' + lexer.span());
 	}
-};
+}
 
-var lexComment = function(lexer) {
+function lexComment(lexer) {
 	while (true) {
 		var c = lexer.next();
 		if (c == '\n' || c == EOF) {
@@ -190,9 +192,9 @@ var lexComment = function(lexer) {
 			return lexRoot;
 		}
 	}
-};
+}
 
-var lexMultiComment = function(lexer) {
+function lexMultiComment(lexer) {
 	while (true) {
 		switch (lexer.next()) {
 			case EOF:
@@ -206,9 +208,9 @@ var lexMultiComment = function(lexer) {
 		}
 	}
 	return null;
-};
+}
 
-var lexNumber = function(lexer) {
+function lexNumber(lexer) {
 	var digits = "0123456789";
 	if (lexer.accept("0") && lexer.accept("xX")) {
 		digits = "0123456789abcdefABCDEF";
@@ -232,9 +234,9 @@ var lexNumber = function(lexer) {
 
 	lexer.next();
 	return lexer.error("bad number syntax: " + lexer.span());
-};
+}
 
-var lexString = function(lexer) {
+function lexString(lexer) {
 	while (true) {
 		switch (lexer.next()) {
 			case '\\':
@@ -250,9 +252,9 @@ var lexString = function(lexer) {
 				return lexRoot;
 		}
 	}
-};
+}
 
-var lexIdentifier = function(lexer) {
+function lexIdentifier(lexer) {
 	while (true) {
 		var c = lexer.next();
 
@@ -278,4 +280,4 @@ var lexIdentifier = function(lexer) {
 			}
 		}
 	}
-};
+}

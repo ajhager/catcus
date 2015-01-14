@@ -2,50 +2,52 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-var token = require('./lexer').token;
-var kernel = require('./kernel');
+import { token } from './lexer';
+import kernel from './kernel';
 
-var Parser = function(tokens, context) {
-	this.tokens = tokens;
-	this.pos = 0;
-	this.code = [];
-};
-
-Parser.prototype.run = function() {
-	var state = parseBlock;
-	while (state) {
-		state = state(this);
+class Parser {
+	constructor(tokens, context) {
+		this.tokens = tokens;
+		this.pos = 0;
+		this.code = [];
 	}
-};
 
-Parser.prototype.next = function() {
-	return this.tokens[this.pos++];
-};
-
-Parser.prototype.expect = function(tokenType) {
-	var t = this.next();
-	if (t.type == tokenType) {
-		return t.value;
-	};
-};
-
-Parser.prototype.emit = function(value) {
-	for (var i = 0; i < value.length; i++) {
-		this.code.push(value[i]);
+	run() {
+		var state = parseBlock;
+		while (state) {
+			state = state(this);
+		}
 	}
-};
 
-Parser.prototype.lookup = function(value) {
-	return kernel[value];
-};
+	next() {
+		return this.tokens[this.pos++];
+	}
 
-exports.parse = function(tokens) {
+	expect(tokenType) {
+		var t = this.next();
+		if (t.type == tokenType) {
+			return t.value;
+		};
+	}
+
+	emit(value) {
+		for (var i = 0; i < value.length; i++) {
+			this.code.push(value[i]);
+		}
+	}
+
+	lookup(value) {
+		return kernel[value];
+	}
+}
+
+export default function parse(tokens) {
 	var parser = new Parser(tokens);
 	parser.run();
 	return parser.code.join("\n");
-};
+}
 
-var parseBlock = function(parser) {
+function parseBlock(parser) {
 	while (true) {
 		var t = parser.next();
 		switch (t.type) {
@@ -105,9 +107,9 @@ var parseBlock = function(parser) {
 				return null;
 		}
 	}
-};
+}
 
-var parseObj = function(parser) {
+function parseObj(parser) {
 	var name = parser.expect(token.Identifier);
 	if (!name) {
 		return console.error("obj def name must be a valid identifier");
@@ -142,9 +144,9 @@ var parseObj = function(parser) {
 
 		fields.push(field);
 	}
-};
+}
 
-var parseQuote = function(parser) {
+function parseQuote(parser) {
 	var name = parser.expect(token.Identifier);
 	if (!name) {
 		return console.error("quoted name must be a valid identifier");

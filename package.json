@@ -18,11 +18,12 @@
     "catcus": "./catcus"
   },
   "homepage": "http://catcus.org",
-	"license": {
-		"type": "BSD3",
-		"url": "https://github.com/ajhager/catcus/raw/master/LICENSE"
+  "license": {
+    "type": "BSD3",
+    "url": "https://github.com/ajhager/catcus/raw/master/LICENSE"
   },
   "dependencies": {
+    "6to5": "^2.11.3",
     "colors": "^1.0.3",
     "unicode-categories": "^0.9.1"
   }
